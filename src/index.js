@@ -10,7 +10,9 @@ import AddWord from './AddWord'
 
 ReactDOM.render(
     <React.StrictMode>
-        <BrowserRouter>
+        <BrowserRouter
+            basename={process.env.NODE_ENV === 'production' ? '/flashcard' : ''}
+        >
             <Routes>
                 <Route path="/" element={<App />}>
                     <Route index element={<Home />} />
