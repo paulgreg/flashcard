@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react'
+import { Link, Outlet } from 'react-router-dom'
+import DataContext from './DataContext'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const load = () => {
+    const raw = localStorage.getItem('flashcard')
+    if (raw) return JSON.parse(raw)
+    return []
 }
+const save = (data) => localStorage.setItem('flashcard', JSON.stringify(data))
 
-export default App;
+export default function App() {
+    const [lists, setLists] = useState(load())
+
+    const addList = (name) => {
+        const newData = lists.concat({ name, words: [] })
+        setLists(newData)
+        save(newData)
+    }
+    const addWord = (index) => (word) => {
+        const newData = lists.map((list, i) => {
+            if (i === index)
+                return { name: list.name, words: list.words.concat(word) }
+            return list
+        })
+        setLists(newData)
+        save(newData)
+    }
+
+    return (
+        <DataContext.Provider
+            value={{
+                lists,
+                addList,
+                addWord,
+            }}
+        >
+            <div className="app">
+                <header>
+                    <Link to="/">Flashcard</Link>
+                </header>
+                <Outlet />
+            </div>
+        </DataContext.Provider>
+    )
+}
