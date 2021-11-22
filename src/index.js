@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './Home'
 import List from './List'
 import AddList from './AddList'
@@ -10,7 +10,7 @@ import AddWord from './AddWord'
 
 ReactDOM.render(
     <React.StrictMode>
-        <HashRouter
+        <BrowserRouter
             basename={process.env.NODE_ENV === 'production' ? '/flashcard' : ''}
         >
             <Routes>
@@ -21,7 +21,7 @@ ReactDOM.render(
                     <Route path="/list/:index/add" element={<AddWord />} />
                 </Route>
             </Routes>
-        </HashRouter>
+        </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root')
 )
