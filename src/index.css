@@ -10,6 +10,14 @@ body {
     color: white;
 }
 
+@font-face {
+    font-family: 'Cedarville Cursive';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('./Cedarville-Cursive-Regular.woff2') format('woff2');
+}
+
 input {
     margin-top: 20px;
     padding: 6px;

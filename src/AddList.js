@@ -27,6 +27,7 @@ export default function AddList() {
                         placeholder="list name"
                         minLength="1"
                         autoFocus
+                        style={{ width: '90%' }}
                     />
                 </form>
             </div>

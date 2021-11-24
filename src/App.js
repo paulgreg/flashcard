@@ -17,10 +17,28 @@ export default function App() {
         setLists(newData)
         save(newData)
     }
-    const addWord = (index) => (word) => {
+    const addWord = (listIdx) => (word) => {
         const newData = lists.map((list, i) => {
-            if (i === index)
+            if (i === listIdx)
                 return { name: list.name, words: list.words.concat(word) }
+            return list
+        })
+        setLists(newData)
+        save(newData)
+    }
+    const delList = (idx) => {
+        const newData = [...lists]
+        newData.splice(idx, 1)
+        setLists(newData)
+        save(newData)
+    }
+    const delWord = (listIdx, wordIdx) => {
+        const newData = lists.map((list, i) => {
+            if (i === listIdx) {
+                const newWords = [...list.words]
+                newWords.splice(wordIdx, 1)
+                return { name: list.name, words: newWords }
+            }
             return list
         })
         setLists(newData)
@@ -32,7 +50,9 @@ export default function App() {
             value={{
                 lists,
                 addList,
+                delList,
                 addWord,
+                delWord,
             }}
         >
             <div className="app">
