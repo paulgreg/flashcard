@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { useEffect } from 'react/cjs/react.development'
 
 export default function Play({ list }) {
-    const [word, setWord] = useState()
-    const [style, setStyle] = useState()
+    const [word, setWord] = useState('')
+    const [style, setStyle] = useState({})
 
     const pickWord = (list) => {
         const { words } = list
