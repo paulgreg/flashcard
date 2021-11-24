@@ -6,9 +6,10 @@ export default function Play({ list }) {
     const [word, setWord] = useState('')
     const [style, setStyle] = useState({})
 
-    const pickWord = (list) => {
-        const { words } = list
+    const pickWord = (list = {}) => {
+        const { words = [] } = list
         const len = words.length
+        if (!len) return ''
         const rnd = Math.floor(Math.random() * len)
         return words[rnd]
     }
