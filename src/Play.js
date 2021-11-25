@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useEffect } from 'react/cjs/react.development'
 
 export default function Play({ list }) {
-    const [word, setWord] = useState('')
+    const [word, setWord] = useState('tap to play')
     const [style, setStyle] = useState({})
 
     const pickWord = (list = {}) => {
@@ -29,16 +28,10 @@ export default function Play({ list }) {
         return defaultStyle
     }
 
-    useEffect(() => {
-        setStyle(pickStyle())
-        setWord(pickWord(list))
-    }, [list])
-
     const onClick = () => {
         setStyle(pickStyle())
         setWord(pickWord(list))
     }
-
     return (
         <>
             <div className="content" onClick={onClick}>
