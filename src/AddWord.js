@@ -9,7 +9,7 @@ export default function AddWord({ list, listIdx }) {
 
     const onSubmit = (e) => {
         e.preventDefault()
-        const value = inputRef.current.value
+        const value = inputRef.current.value.trim()
         if (value.length > 0) {
             addWord(listIdx)(value)
             navigate(`/list/${listIdx}`)

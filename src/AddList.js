@@ -9,7 +9,7 @@ export default function AddList() {
 
     const onSubmit = (e) => {
         e.preventDefault()
-        const value = inputRef.current.value
+        const value = inputRef.current.value.trim()
         if (value.length > 0) {
             addList(value)
             navigate('/')
