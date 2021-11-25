@@ -35,7 +35,7 @@ export default function List({ list, listIdx }) {
                 ))}
             </div>
             <footer>
-                <Link to={`/list/${listIdx}/add`}>add a word</Link>
+                <Link to={`/list/${listIdx}/add`}>add words</Link>
             </footer>
         </>
     )

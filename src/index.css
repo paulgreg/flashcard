@@ -39,6 +39,7 @@ input {
 .content {
     flex-grow: 1;
     padding: 6px;
+    overflow: auto;
 }
 
 footer,

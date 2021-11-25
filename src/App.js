@@ -13,14 +13,14 @@ export default function App() {
     const [lists, setLists] = useState(load())
 
     const addList = (name) => {
-        const newData = lists.concat({ name, words: [] })
+        const newData = [{ name, words: [] }].concat(lists)
         setLists(newData)
         save(newData)
     }
     const addWord = (listIdx) => (word) => {
         const newData = lists.map((list, i) => {
             if (i === listIdx)
-                return { name: list.name, words: list.words.concat(word) }
+                return { name: list.name, words: [word].concat(list.words) }
             return list
         })
         setLists(newData)

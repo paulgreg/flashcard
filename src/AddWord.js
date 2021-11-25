@@ -1,10 +1,9 @@
 import { useContext, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import DataContext from './DataContext'
 
 export default function AddWord({ list, listIdx }) {
     const { addWord } = useContext(DataContext)
-    const navigate = useNavigate()
     const inputRef = useRef()
 
     const onSubmit = (e) => {
@@ -12,7 +11,7 @@ export default function AddWord({ list, listIdx }) {
         const value = inputRef.current.value.trim()
         if (value.length > 0) {
             addWord(listIdx)(value)
-            navigate(`/list/${listIdx}`)
+            inputRef.current.value = ''
         }
     }
 
@@ -30,6 +29,11 @@ export default function AddWord({ list, listIdx }) {
                         style={{ width: '90%' }}
                     />
                 </form>
+
+                {list.words.length === 0 && <p>No word</p>}
+                {list.words.map((word, wordIdx) => (
+                    <p key={wordIdx}>{word}</p>
+                ))}
             </div>
             <footer>
                 <Link to={`/list/${listIdx}`}>cancel</Link>
