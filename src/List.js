@@ -14,7 +14,7 @@ export default function List({ list, listIdx }) {
         <>
             <div className="content">
                 {list.words.length === 0 && <p>No word</p>}
-                {list.words.map((word, wordIdx) => (
+                {list.words.sort().map((word, wordIdx) => (
                     <p
                         key={wordIdx}
                         style={{
