@@ -6,6 +6,10 @@ You can try the app here : https://paulgreg.me/flashcard/ (but I strongly sugges
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Settings
+
+Before first run, copy `src/settings.json.dist` to `src/settings.json`.
+
 
 ## Color palette
 

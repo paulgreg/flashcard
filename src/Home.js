@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import DataContext from './DataContext'
+import Settings from './settings.json'
 
 export default function Home() {
     const { lists, delList } = useContext(DataContext)
@@ -52,6 +53,12 @@ export default function Home() {
                 ))}
             </div>
             <footer>
+                {Settings.saveOnline && (
+                    <>
+                        <Link to="/configure">configure</Link>
+                        {' | '}
+                    </>
+                )}
                 <Link to="/list/add">add a list</Link>
             </footer>
         </>

@@ -1,0 +1,4 @@
+{
+    "saveOnline": false,
+    "saveUrl": "https://some-server-url-to-allow-json-get-and-post"
+}

@@ -36,7 +36,7 @@ export default function AddWord({ list, listIdx }) {
                 ))}
             </div>
             <footer>
-                <Link to={`/list/${listIdx}`}>cancel</Link>
+                <Link to={`/list/${listIdx}`}>back</Link>
             </footer>
         </>
     )

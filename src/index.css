@@ -18,13 +18,18 @@ body {
     src: url('./Cedarville-Cursive-Regular.woff2') format('woff2');
 }
 
-input {
+input,
+button {
     margin-top: 20px;
     padding: 6px;
     font-size: 24px;
     color: #2e4c6d;
     border: 1px solid #2e4c6d;
     background: #daddfc;
+}
+button {
+    display: block;
+    text-transform: uppercase;
 }
 .app {
     position: absolute;

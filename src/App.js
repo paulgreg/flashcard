@@ -1,16 +1,11 @@
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import DataContext from './DataContext'
-
-const load = () => {
-    const raw = localStorage.getItem('flashcard')
-    if (raw) return JSON.parse(raw)
-    return []
-}
-const save = (data) => localStorage.setItem('flashcard', JSON.stringify(data))
+import settings from './settings.json'
 
 export default function App() {
-    const [lists, setLists] = useState(load())
+    const [lists, setLists] = useState([])
+    const [key, setKey] = useState(localStorage.getItem('flashcard-key'))
 
     const addList = (name) => {
         const newData = [{ name, words: [] }].concat(lists)
@@ -45,6 +40,60 @@ export default function App() {
         save(newData)
     }
 
+    const loadOnline = useCallback(
+        async (key) =>
+            fetch(`${settings.saveUrl}/${key}.json`).then((response) =>
+                response.json()
+            ),
+        []
+    )
+
+    const load = useCallback(async () => {
+        const raw = localStorage.getItem('flashcard')
+        if (raw) setLists(JSON.parse(raw))
+        if (settings.saveOnline) {
+            const key = localStorage.getItem('flashcard-key')
+            if (key) {
+                const json = await loadOnline(key)
+                if (json && json instanceof Array) setLists(json)
+            }
+        }
+    }, [loadOnline, setLists])
+
+    const save = (newData) => {
+        localStorage.setItem('flashcard', JSON.stringify(newData))
+        if (settings.saveOnline) {
+            const key = localStorage.getItem('flashcard-key')
+            if (key) saveOnline(key, newData)
+        }
+    }
+
+    const saveOnline = (key, data) =>
+        fetch(`${settings.saveUrl}/${key}.json`, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+
+    const initSave = async (key) => {
+        setKey(key)
+        localStorage.setItem('flashcard-key', key)
+        saveOnline(key, lists)
+    }
+    const initLoad = async (key) => {
+        setKey(key)
+        localStorage.setItem('flashcard-key', key)
+        const json = await loadOnline(key)
+        setLists(json)
+    }
+
+    useEffect(() => {
+        load()
+    }, [])
+
     return (
         <DataContext.Provider
             value={{
@@ -53,6 +102,9 @@ export default function App() {
                 delList,
                 addWord,
                 delWord,
+                key,
+                initLoad,
+                initSave,
             }}
         >
             <div className="app">

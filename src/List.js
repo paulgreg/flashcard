@@ -36,6 +36,15 @@ export default function List({ list, listIdx }) {
             </div>
             <footer>
                 <Link to={`/list/${listIdx}/add`}>add words</Link>
+                {' | '}
+                <Link
+                    to={`/list/${listIdx}/play`}
+                    style={{
+                        textDecoration: 'none',
+                    }}
+                >
+                    ▶
+                </Link>
             </footer>
         </>
     )

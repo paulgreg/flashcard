@@ -14,6 +14,7 @@ git commit -am "Save uncommited changes (WIP)"
 echo "Building GitHub Page branch..."
 git branch --delete --force gh-pages
 git checkout --orphan gh-pages
+cp src/settings.json.dist src/settings.json
 git add -f build
 git commit -m "Rebuild GitHub pages"
 

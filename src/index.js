@@ -8,6 +8,7 @@ import List from './List'
 import AddList from './AddList'
 import AddWord from './AddWord'
 import Play from './Play'
+import Config from './Config'
 import Error from './Error'
 import DataContext from './DataContext'
 
@@ -48,6 +49,7 @@ ReactDOM.render(
                         path="/list/:index/play"
                         element={<Validate component={Play} />}
                     />
+                    <Route path="/configure" element={<Config />} />
                 </Route>
             </Routes>
         </BrowserRouter>
