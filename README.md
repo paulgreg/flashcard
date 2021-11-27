@@ -11,6 +11,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Before first run, copy `src/settings.json.dist` to `src/settings.json`.
 
+By default, data is stored in localStorage.
+
+If you want to save data online, you need to set `saveOnline` to true and update `saveUrl` to a service allowing to GET and POST json like [json-store](https://github.com/paulgreg/json-store).
+
 
 ## Color palette
 
