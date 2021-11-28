@@ -2,6 +2,8 @@
 
 #Usage: ./to_ghpages
 
+mv src/settings.json src/settings.json.bak
+cp src/settings.json.dist src/settings.json
 PUBLIC_URL="https://paulgreg.me/flashcard" npm run build
 
 BRANCH=$(git symbolic-ref -q HEAD)
@@ -9,12 +11,13 @@ BRANCH=${BRANCH##refs/heads/}
 echo "Actual branch: $BRANCH"
 
 echo "Saving modified files..."
+rm src/settings.json
+mv src/settings.json.bak src/settings.json
 git commit -am "Save uncommited changes (WIP)"
 
 echo "Building GitHub Page branch..."
 git branch --delete --force gh-pages
 git checkout --orphan gh-pages
-cp src/settings.json.dist src/settings.json
 git add -f build
 git commit -m "Rebuild GitHub pages"
 
