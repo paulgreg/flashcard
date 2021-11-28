@@ -65,12 +65,26 @@ export default function Home() {
                         </small>
                     </label>
                     <p>
-                        <button style={{ margin: '2em auto' }} onClick={onLoad}>
+                        <button
+                            style={{ margin: '1em auto 0' }}
+                            onClick={onLoad}
+                        >
                             Load
                         </button>
-                        <button style={{ margin: 'auto' }} onClick={onSave}>
+                        <small>
+                            (will fetch data from server and overwrite your
+                            local data if any)
+                        </small>
+                        <button
+                            style={{ margin: '1em auto 0' }}
+                            onClick={onSave}
+                        >
                             Save
                         </button>
+                        <small>
+                            (will save your local data on server and overwrite
+                            them on server if any)
+                        </small>
                     </p>
                 </form>
             </div>
