@@ -23,7 +23,10 @@ export default function Home() {
                     >
                         <span
                             onClick={onDelete(list.name, index)}
-                            style={{ cursor: 'pointer' }}
+                            style={{
+                                margin: 'auto 0 auto 8px',
+                                cursor: 'pointer',
+                            }}
                         >
                             🗑️
                         </span>
@@ -40,11 +43,11 @@ export default function Home() {
                             <Link
                                 to={`/list/${index}/play`}
                                 style={{
-                                    margin: 'auto 10',
+                                    margin: 'auto 8px auto 0',
                                     textDecoration: 'none',
                                 }}
                             >
-                                ▶️
+                                ▶
                             </Link>
                         ) : (
                             <span></span>
