@@ -6,8 +6,7 @@ export default function List({ list, listIdx }) {
     const { delWord } = useContext(DataContext)
 
     const onWordDelete = (listIdx, word, wordIdx) => (e) => {
-        if (window.confirm(`Delete word ${word} ?`))
-            delWord(listIdx, word, wordIdx)
+        if (window.confirm(`Delete word ${word} ?`)) delWord(listIdx, wordIdx)
     }
 
     return (
