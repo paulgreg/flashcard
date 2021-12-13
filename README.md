@@ -19,8 +19,3 @@ If you want to save data online, you need to set `saveOnline` to true and update
 ## Color palette
 
 https://colorhunt.co/palette/2e4c6d396eb0daddfcfc997c
-
-
-## Font
-
-Cedarville Cursive - Copyright (c) 2010, Kimberly Geswein kimberlygeswein.com - FREE

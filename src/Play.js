@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 
 export default function Play({ list }) {
     const [word, setWord] = useState('tap to play')
-    const [style, setStyle] = useState({})
 
     const pickWord = (list = {}) => {
         const { words = [] } = list
@@ -13,23 +12,7 @@ export default function Play({ list }) {
         return words[rnd]
     }
 
-    const pickStyle = () => {
-        const rnd = Math.floor(Math.random() * 3)
-        const defaultStyle = {
-            fontSize: '50px',
-        }
-        if (rnd < 1) return { ...defaultStyle, textTransform: 'uppercase' }
-        else if (rnd < 2)
-            return {
-                ...defaultStyle,
-                fontSize: '60px',
-                fontFamily: 'Cedarville Cursive',
-            }
-        return defaultStyle
-    }
-
     const onClick = () => {
-        setStyle(pickStyle())
         setWord(pickWord(list))
     }
     return (
@@ -40,7 +23,8 @@ export default function Play({ list }) {
                         height: 'calc(100% - 120px)',
                         display: 'grid',
                         placeItems: 'center',
-                        ...style,
+                        fontSize: '50px',
+                        textTransform: 'uppercase',
                     }}
                 >
                     {word}
