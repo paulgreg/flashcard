@@ -44,7 +44,7 @@ export default function Home() {
                             ref={inputRef}
                             type="text"
                             name="key"
-                            value={key}
+                            defaultValue={key}
                             placeholder="bob"
                             minLength="3"
                             maxLength="32"
