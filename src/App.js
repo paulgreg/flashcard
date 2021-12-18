@@ -42,9 +42,12 @@ export default function App() {
 
     const loadOnline = useCallback(
         async (key) =>
-            fetch(`${settings.saveUrl}/${key}.json`).then((response) =>
-                response.json()
-            ),
+            fetch(`${settings.saveUrl}/${key}.json`).then((response) => {
+                if (response.ok) return response.json()
+                if (response.status === 404) {
+                    return []
+                }
+            }),
         []
     )
 
