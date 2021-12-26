@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "https://paulgreg.me/flashcard/static/css/main.af7aa8ca.chunk.css",
+    "main.js": "https://paulgreg.me/flashcard/static/js/main.f71b4772.chunk.js",
+    "main.js.map": "https://paulgreg.me/flashcard/static/js/main.f71b4772.chunk.js.map",
+    "runtime-main.js": "https://paulgreg.me/flashcard/static/js/runtime-main.fad924ef.js",
+    "runtime-main.js.map": "https://paulgreg.me/flashcard/static/js/runtime-main.fad924ef.js.map",
+    "static/js/2.10ce025b.chunk.js": "https://paulgreg.me/flashcard/static/js/2.10ce025b.chunk.js",
+    "static/js/2.10ce025b.chunk.js.map": "https://paulgreg.me/flashcard/static/js/2.10ce025b.chunk.js.map",
+    "index.html": "https://paulgreg.me/flashcard/index.html",
+    "static/css/main.af7aa8ca.chunk.css.map": "https://paulgreg.me/flashcard/static/css/main.af7aa8ca.chunk.css.map",
+    "static/js/2.10ce025b.chunk.js.LICENSE.txt": "https://paulgreg.me/flashcard/static/js/2.10ce025b.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fad924ef.js",
+    "static/js/2.10ce025b.chunk.js",
+    "static/css/main.af7aa8ca.chunk.css",
+    "static/js/main.f71b4772.chunk.js"
+  ]
+}
