@@ -42,12 +42,21 @@ export default function App() {
 
     const loadOnline = useCallback(
         async (key) =>
-            fetch(`${settings.saveUrl}/${key}.json`).then((response) => {
-                if (response.ok) return response.json()
-                if (response.status === 404) {
-                    return []
-                }
-            }),
+            fetch(`${settings.saveUrl}/${key}.json`, {
+                headers: {
+                    Authorization: `Basic ${settings.authorization}`,
+                },
+            })
+                .then((response) => {
+                    if (response.ok) return response.json()
+                    if (response.status === 404) {
+                        return []
+                    }
+                })
+                .catch((e) => {
+                    console.error(e)
+                    alert('error while loading json')
+                }),
         []
     )
 
@@ -76,6 +85,7 @@ export default function App() {
             method: 'POST',
             mode: 'cors',
             headers: {
+                Authorization: `Basic ${settings.authorization}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
@@ -95,7 +105,7 @@ export default function App() {
 
     useEffect(() => {
         load()
-    }, [])
+    }, [load])
 
     return (
         <DataContext.Provider

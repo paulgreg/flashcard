@@ -13,7 +13,7 @@ Before first run, copy `src/settings.json.dist` to `src/settings.json`.
 
 By default, data is stored in localStorage.
 
-If you want to save data online, you need to set `saveOnline` to true and update `saveUrl` to a service allowing to GET and POST json like [json-store](https://github.com/paulgreg/json-store).
+You can save data on a server via [json-store](https://github.com/paulgreg/json-store) project. To do so, install it on your server then update `src/settings.json` : set `saveOnline` to true, update `saveUrl` and `authorization` according json-store configuration.
 
 
 ## Color palette
