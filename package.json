@@ -15,6 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "npm i && PUBLIC_URL=\"https://paulgreg.me/flashcard\" ./to_ghpages",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
