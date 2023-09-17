@@ -40,12 +40,14 @@ export default function AddQuestion({ list, listIdx }) {
                         minLength="1"
                         style={{ width: '90%' }}
                     />
-                    <input type="submit" value="ok" style={{width: '80%'}}/>
+                    <input type="submit" value="ok" style={{ width: '80%' }} />
                 </form>
 
                 {list.questions.length === 0 && <p>No question</p>}
                 {list.questions.map((question, qIdx) => (
-                    <p key={qIdx}><strong>{question.q}</strong> : {question.a}</p>
+                    <p key={qIdx}>
+                        <strong>{question.q}</strong> → {question.a}
+                    </p>
                 ))}
             </div>
             <footer>
