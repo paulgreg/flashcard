@@ -6,7 +6,8 @@ export default function List({ list, listIdx }) {
     const { delQuestion } = useContext(DataContext)
 
     const onQuestionDelete = (listIdx, question, qIdx) => (e) => {
-        if (window.confirm(`Delete question ${question.a} ?`)) delQuestion(listIdx, qIdx)
+        if (window.confirm(`Delete question ${question.a} ?`))
+            delQuestion(listIdx, qIdx)
     }
 
     return (
@@ -28,7 +29,7 @@ export default function List({ list, listIdx }) {
                         >
                             🗑️
                         </span>
-                        {question.q} : {question.a}
+                        {question.q} → {question.a}
                         <span></span>
                     </p>
                 ))}

@@ -1,32 +1,27 @@
 import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 
-    const pickQuestion = (list = {}) => {
-        const { questions= [] } = list
-        const len = questions.length
-        if (!len) return ''
-        const rnd = Math.floor(Math.random() * len)
-        return questions[rnd]
-    }
+const pickQuestion = (list = {}) => {
+    const { questions = [] } = list
+    const len = questions.length
+    if (!len) return ''
+    const rnd = Math.floor(Math.random() * len)
+    return questions[rnd]
+}
 
-    const Show = ({step, question}) => {
-        if (step === 0) return 'Tap to play'
-        if (step % 2 === 0) return <>Q: {question.a}</>
-        return <>A: {question.q}</>
-
-    }
 export default function Play({ list }) {
     const [step, setStep] = useState(0)
-    const [question, setQuestion] = useState()
+    const [question, setQuestion] = useState(pickQuestion(list))
 
     const onClick = useCallback(() => {
-        console.log(step)
-        setStep(nb => nb+1)
-        if (step % 2 === 0)  {
+        if (step % 2 !== 0) {
             setQuestion(pickQuestion(list))
         }
-
+        setStep((nb) => nb + 1)
     }, [step])
+
+    const odd = step % 2 === 0
+
     return (
         <>
             <div className="content" onClick={onClick}>
@@ -39,7 +34,17 @@ export default function Play({ list }) {
                         textTransform: 'uppercase',
                     }}
                 >
-                    <Show step={step} question={question}/>
+                    {odd ? (
+                        question.q
+                    ) : (
+                        <strong
+                            style={{
+                                color: '#fc997c',
+                            }}
+                        >
+                            {question.a}
+                        </strong>
+                    )}
                 </p>
             </div>
             <footer>
