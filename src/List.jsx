@@ -14,6 +14,7 @@ export default function List({ list }) {
     return (
         <>
             <div className="content">
+                <h2>{list.name}</h2>
                 {list.questions.length === 0 && <p>No question</p>}
                 {list.questions.sort(sortQuestionsByScore).map((question) => (
                     <p

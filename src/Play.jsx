@@ -59,13 +59,13 @@ export default function Play({ list, index }) {
     return (
         <>
             <div className="content" onClick={onClick}>
+                <h2>{list.name}</h2>
                 <p
                     style={{
                         height: 'calc(100% - 120px)',
                         display: 'grid',
                         placeItems: 'center',
                         fontSize: '50px',
-                        textTransform: 'uppercase',
                     }}
                 >
                     {odd && (
@@ -93,7 +93,7 @@ export default function Play({ list, index }) {
                 </p>
             </div>
             <footer>
-                <Link to={`/`}>back</Link>
+                <Link to={`/list/${list.id}`}>back</Link>
             </footer>
         </>
     )

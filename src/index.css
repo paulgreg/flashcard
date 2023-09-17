@@ -55,6 +55,11 @@ a {
     color: #fc997c;
 }
 
+h1,
+h2 {
+    margin: 4px;
+}
+
 a {
     padding: 4px;
 }

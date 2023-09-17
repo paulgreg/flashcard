@@ -22,6 +22,7 @@ export default function AddQuestion({ list }) {
     return (
         <>
             <div className="content">
+                <h2>{list.name}</h2>
                 <form onSubmit={onSubmit}>
                     <input
                         ref={inputQuestionRef}
@@ -40,7 +41,7 @@ export default function AddQuestion({ list }) {
                         minLength="1"
                         style={{ width: '90%' }}
                     />
-                    <input type="submit" value="ok" style={{ width: '80%' }} />
+                    <input type="submit" value="ok" style={{ width: '60px' }} />
                 </form>
 
                 {list.questions.length === 0 && <p>No question</p>}

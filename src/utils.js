@@ -7,7 +7,7 @@ export const sortQuestionsByScore = (q1, q2) => {
 export const computeRatio = (q) => {
     if (q?.score === undefined || q?.count === undefined) return
     const ratio = ((q.score / q.count) * 100).toFixed(0)
-    return `${ratio} %`
+    return `${ratio}%`
 }
 
 export const getId = () => Date.now()
