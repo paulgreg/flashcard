@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/flashcard/",
     "deploy": "npm i && ./to_ghpages"
   },
   "eslintConfig": {
