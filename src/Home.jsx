@@ -35,11 +35,11 @@ export default function Home() {
                                 {list.name}
                             </Link>
                             <small style={{ marign: 'auto 10' }}>
-                                ({list.words.length} word
-                                {list.words.length > 1 ? 's' : ''})
+                                ({list.questions.length} question 
+                                {list.questions.length > 1 ? 's' : ''})
                             </small>
                         </span>
-                        {list.words.length ? (
+                        {list.questions.length ? (
                             <Link
                                 to={`/list/${index}/play`}
                                 style={{

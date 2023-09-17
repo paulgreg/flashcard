@@ -8,14 +8,14 @@ export default function App() {
     const [key, setKey] = useState(localStorage.getItem('flashcard-key'))
 
     const addList = (name) => {
-        const newData = [{ name, words: [] }].concat(lists)
+        const newData = [{ name, questions: [] }].concat(lists)
         setLists(newData)
         save(newData)
     }
-    const addWord = (listIdx) => (word) => {
+    const addQuestion = (listIdx) => (q, a) => {
         const newData = lists.map((list, i) => {
             if (i === listIdx)
-                return { name: list.name, words: [word].concat(list.words) }
+                return { name: list.name, questions: [{q, a}].concat(list.questions) }
             return list
         })
         setLists(newData)
@@ -27,12 +27,12 @@ export default function App() {
         setLists(newData)
         save(newData)
     }
-    const delWord = (listIdx, wordIdx) => {
+    const delQuestion = (listIdx, qIdx) => {
         const newData = lists.map((list, i) => {
             if (i === listIdx) {
-                const newWords = [...list.words]
-                newWords.splice(wordIdx, 1)
-                return { name: list.name, words: newWords }
+                const newQuestions = [...list.questions]
+                newQuestions.splice(qIdx, 1)
+                return { name: list.name, questions: newQuestions }
             }
             return list
         })
@@ -113,8 +113,8 @@ export default function App() {
                 lists,
                 addList,
                 delList,
-                addWord,
-                delWord,
+                addQuestion,
+                delQuestion,
                 key,
                 initLoad,
                 initSave,

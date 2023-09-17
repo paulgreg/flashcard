@@ -1,6 +1,6 @@
 # Flashcard
 
-A simple PWA to learn words for small kids.
+A simple flashcard PWA.
 
 You can try the app here : https://paulgreg.me/flashcard/ (but I strongly suggest you to host it yourself).
 

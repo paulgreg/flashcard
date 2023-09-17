@@ -1,20 +1,32 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 
-export default function Play({ list }) {
-    const [word, setWord] = useState('tap to play')
-
-    const pickWord = (list = {}) => {
-        const { words = [] } = list
-        const len = words.length
+    const pickQuestion = (list = {}) => {
+        const { questions= [] } = list
+        const len = questions.length
         if (!len) return ''
         const rnd = Math.floor(Math.random() * len)
-        return words[rnd]
+        return questions[rnd]
     }
 
-    const onClick = () => {
-        setWord(pickWord(list))
+    const Show = ({step, question}) => {
+        if (step === 0) return 'Tap to play'
+        if (step % 2 === 0) return <>Q: {question.a}</>
+        return <>A: {question.q}</>
+
     }
+export default function Play({ list }) {
+    const [step, setStep] = useState(0)
+    const [question, setQuestion] = useState()
+
+    const onClick = useCallback(() => {
+        console.log(step)
+        setStep(nb => nb+1)
+        if (step % 2 === 0)  {
+            setQuestion(pickQuestion(list))
+        }
+
+    }, [step])
     return (
         <>
             <div className="content" onClick={onClick}>
@@ -27,7 +39,7 @@ export default function Play({ list }) {
                         textTransform: 'uppercase',
                     }}
                 >
-                    {word}
+                    <Show step={step} question={question}/>
                 </p>
             </div>
             <footer>
