@@ -12,10 +12,14 @@ export const computeRatio = (q) => {
 
 export const getId = () => Date.now()
 
-export const throttle = (fn, timeout = 1000) => {
-    let timer
-    return (...args) => {
-        clearTimeout(timer)
-        timer = setTimeout(fn(...args), timeout)
+export const debounce = (fn, delay) => {
+    let timerId
+
+    return function (...args) {
+        clearTimeout(timerId)
+
+        timerId = setTimeout(() => {
+            fn.apply(this, args)
+        }, delay)
     }
 }

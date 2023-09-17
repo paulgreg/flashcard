@@ -2,7 +2,9 @@ import { useState, useCallback, useEffect } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import DataContext from './DataContext'
 import settings from './settings.json'
-import { getId, throttle } from './utils'
+import { getId, debounce } from './utils'
+
+const DEBOUNCE_SAVE_TIME = 2000
 
 export default function App() {
     const [lists, setLists] = useState([])
@@ -115,18 +117,21 @@ export default function App() {
         }
     }
 
-    const saveOnline = throttle(
-        (key, data) =>
-            fetch(`${settings.saveUrl}/${key}.json`, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    Authorization: `Basic ${settings.authorization}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            }),
-        2500
+    const saveOnline = useCallback(
+        debounce(
+            (key, data) =>
+                fetch(`${settings.saveUrl}/${key}.json`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        Authorization: `Basic ${settings.authorization}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                }),
+            DEBOUNCE_SAVE_TIME
+        ),
+        []
     )
 
     const initSave = async (key) => {
