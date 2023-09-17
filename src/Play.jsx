@@ -1,26 +1,60 @@
-import { useState, useCallback } from 'react'
+import { useContext, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import { sortQuestionsByScore } from './utils'
+import DataContext from './DataContext'
 
-const pickQuestion = (list = {}) => {
-    const { questions = [] } = list
-    const len = questions.length
-    if (!len) return ''
-    const rnd = Math.floor(Math.random() * len)
-    return questions[rnd]
+const styleScore = {
+    cursor: 'pointer',
+    padding: '1em',
+    width: '90%',
 }
 
-export default function Play({ list }) {
-    const [step, setStep] = useState(0)
-    const [question, setQuestion] = useState(pickQuestion(list))
+const usePickQuestion = (list) => {
+    const [idx, setIdx] = useState(0)
+    const [questions, setQuestions] = useState(
+        list.questions.sort(sortQuestionsByScore)
+    )
 
-    const onClick = useCallback(() => {
-        if (step % 2 !== 0) {
-            setQuestion(pickQuestion(list))
+    const next = useCallback(() => {
+        if (idx === questions.length) {
+            setIdx(0)
+            const questionsResorted = questions.sort(sortQuestionsByScore)
+            setQuestions(questionsResorted)
+            return questionsResorted[0]
+        } else {
+            setIdx(idx + 1)
+            return questions[idx]
         }
-        setStep((nb) => nb + 1)
-    }, [step])
+    }, [idx, questions])
 
-    const odd = step % 2 === 0
+    return { first: questions[0], next }
+}
+
+export default function Play({ list, index }) {
+    const [step, setStep] = useState(0)
+    const { first, next } = usePickQuestion(list)
+    const [question, setQuestion] = useState(first)
+    const { setScore } = useContext(DataContext)
+
+    const onClick = useCallback(
+        (e) => {
+            const odd = step % 2 !== 0
+            if (odd) {
+                if (e.target.tagName === 'SPAN') {
+                    const score = parseInt(e.target.dataset.score, 10)
+                    setScore(list.id, question.id, score)
+                    setQuestion(next())
+                } else {
+                    return
+                }
+            }
+            setStep((nb) => nb + 1)
+        },
+        [step, next]
+    )
+
+    const even = step % 2 === 0
+    const odd = !even
 
     return (
         <>
@@ -34,7 +68,13 @@ export default function Play({ list }) {
                         textTransform: 'uppercase',
                     }}
                 >
-                    {odd ? (
+                    {odd && (
+                        <span style={styleScore} data-score="1">
+                            👍
+                        </span>
+                    )}
+
+                    {even ? (
                         question.q
                     ) : (
                         <strong
@@ -44,6 +84,11 @@ export default function Play({ list }) {
                         >
                             {question.a}
                         </strong>
+                    )}
+                    {odd && (
+                        <span style={styleScore} data-score="0">
+                            👎
+                        </span>
                     )}
                 </p>
             </div>

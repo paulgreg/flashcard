@@ -2,7 +2,7 @@ import { useContext, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import DataContext from './DataContext'
 
-export default function AddQuestion({ list, listIdx }) {
+export default function AddQuestion({ list }) {
     const { addQuestion } = useContext(DataContext)
     const inputQuestionRef = useRef()
     const inputAnswerRef = useRef()
@@ -12,7 +12,7 @@ export default function AddQuestion({ list, listIdx }) {
         const questionValue = inputQuestionRef.current.value.trim()
         const answerValue = inputAnswerRef.current.value.trim()
         if (questionValue.length > 0 && answerValue.length > 0) {
-            addQuestion(listIdx)(questionValue, answerValue)
+            addQuestion(list.id)(questionValue, answerValue)
             inputQuestionRef.current.value = ''
             inputAnswerRef.current.value = ''
             inputQuestionRef.current.focus()
@@ -44,14 +44,14 @@ export default function AddQuestion({ list, listIdx }) {
                 </form>
 
                 {list.questions.length === 0 && <p>No question</p>}
-                {list.questions.map((question, qIdx) => (
-                    <p key={qIdx}>
+                {list.questions.map((question) => (
+                    <p key={question.id}>
                         <strong>{question.q}</strong> → {question.a}
                     </p>
                 ))}
             </div>
             <footer>
-                <Link to={`/list/${listIdx}`}>back</Link>
+                <Link to={`/list/${list.id}`}>back</Link>
             </footer>
         </>
     )

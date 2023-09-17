@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { createRoot } from 'react-dom/client';
+import { createRoot } from 'react-dom/client'
 import App from './App'
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
 import Home from './Home'
@@ -12,14 +12,14 @@ import Error from './Error'
 import DataContext from './DataContext'
 import './index.css'
 
-const validate = (lists, index) => (Component) => {
-    if (!index || !index.match(/\d+/)) return <Error />
-    const idx = parseInt(index, 10)
+const validate = (lists, idStr) => (Component) => {
+    if (!idStr || !idStr.match(/\d+/)) return <Error />
+    const id = parseInt(idStr, 10)
 
-    if (idx >= lists.length) return <Error />
+    const list = lists.find((list) => list.id === id)
+    if (!list) return <Error />
 
-    const list = lists[idx]
-    return <Component list={list} listIdx={idx} />
+    return <Component list={list} />
 }
 
 const Validate = ({ component }) => {
@@ -28,10 +28,9 @@ const Validate = ({ component }) => {
     return validate(lists, index)(component)
 }
 
-const container = document.getElementById('root');
-const root = createRoot(container); 
+const container = document.getElementById('root')
+const root = createRoot(container)
 root.render(
-
     <React.StrictMode>
         <BrowserRouter
             basename={process.env.NODE_ENV === 'production' ? '/flashcard' : ''}

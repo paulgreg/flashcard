@@ -2,37 +2,72 @@ import { useState, useCallback, useEffect } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import DataContext from './DataContext'
 import settings from './settings.json'
+import { getId, throttle } from './utils'
 
 export default function App() {
     const [lists, setLists] = useState([])
     const [key, setKey] = useState(localStorage.getItem('flashcard-key'))
 
     const addList = (name) => {
-        const newData = [{ name, questions: [] }].concat(lists)
+        const newData = [{ id: getId(), name, questions: [] }].concat(lists)
         setLists(newData)
         save(newData)
     }
-    const addQuestion = (listIdx) => (q, a) => {
-        const newData = lists.map((list, i) => {
-            if (i === listIdx)
-                return { name: list.name, questions: [{q, a}].concat(list.questions) }
+    const addQuestion = (listId) => (q, a) => {
+        const newData = lists.map((list) => {
+            if (listId === list.id)
+                return {
+                    ...list,
+                    questions: [
+                        {
+                            id: getId(),
+                            q,
+                            a,
+                        },
+                    ].concat(list.questions),
+                }
             return list
         })
         setLists(newData)
         save(newData)
     }
-    const delList = (idx) => {
-        const newData = [...lists]
-        newData.splice(idx, 1)
+    const delList = (listId) => {
+        const newData = lists.filter((list) => list.id !== listId)
         setLists(newData)
         save(newData)
     }
-    const delQuestion = (listIdx, qIdx) => {
-        const newData = lists.map((list, i) => {
-            if (i === listIdx) {
-                const newQuestions = [...list.questions]
-                newQuestions.splice(qIdx, 1)
-                return { name: list.name, questions: newQuestions }
+
+    const setScore = (listId, questionId, score) => {
+        const newData = lists.map((list) => {
+            if (list.id === listId) {
+                const newQuestions = list.questions.map((question) => {
+                    return question.id === questionId
+                        ? {
+                              ...question,
+                              count: question.count ? question.count + 1 : 1,
+                              score: question.score
+                                  ? question.score + score
+                                  : score,
+                          }
+                        : question
+                })
+                return { ...list, questions: newQuestions }
+            }
+            return list
+        })
+        setLists(newData)
+        save(newData)
+    }
+
+    const delQuestion = (listId, questionId) => {
+        const newData = lists.map((list) => {
+            if (listId === list.id) {
+                return {
+                    ...list,
+                    questions: list.questions.filter(
+                        (question) => question.id !== questionId
+                    ),
+                }
             }
             return list
         })
@@ -80,16 +115,19 @@ export default function App() {
         }
     }
 
-    const saveOnline = (key, data) =>
-        fetch(`${settings.saveUrl}/${key}.json`, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                Authorization: `Basic ${settings.authorization}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
+    const saveOnline = throttle(
+        (key, data) =>
+            fetch(`${settings.saveUrl}/${key}.json`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    Authorization: `Basic ${settings.authorization}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            }),
+        2500
+    )
 
     const initSave = async (key) => {
         setKey(key)
@@ -115,6 +153,7 @@ export default function App() {
                 delList,
                 addQuestion,
                 delQuestion,
+                setScore,
                 key,
                 initLoad,
                 initSave,

@@ -1,22 +1,23 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import DataContext from './DataContext'
+import { computeRatio, sortQuestionsByScore } from './utils'
 
-export default function List({ list, listIdx }) {
+export default function List({ list }) {
     const { delQuestion } = useContext(DataContext)
 
-    const onQuestionDelete = (listIdx, question, qIdx) => (e) => {
-        if (window.confirm(`Delete question ${question.a} ?`))
-            delQuestion(listIdx, qIdx)
+    const onQuestionDelete = (list, question) => () => {
+        if (window.confirm(`Delete question ${question.q} ?`))
+            delQuestion(list.id, question.id)
     }
 
     return (
         <>
             <div className="content">
                 {list.questions.length === 0 && <p>No question</p>}
-                {list.questions.sort().map((question, qIdx) => (
+                {list.questions.sort(sortQuestionsByScore).map((question) => (
                     <p
-                        key={qIdx}
+                        key={question.id}
                         style={{
                             display: 'grid',
                             gridTemplateColumns: '1fr 10fr 1fr',
@@ -24,21 +25,21 @@ export default function List({ list, listIdx }) {
                         }}
                     >
                         <span
-                            onClick={onQuestionDelete(listIdx, question, qIdx)}
+                            onClick={onQuestionDelete(list, question)}
                             style={{ cursor: 'pointer' }}
                         >
                             🗑️
                         </span>
-                        {question.q} → {question.a}
-                        <span></span>
+                        {question.q} → {question.a}{' '}
+                        <small>{computeRatio(question)}</small>
                     </p>
                 ))}
             </div>
             <footer>
-                <Link to={`/list/${listIdx}/add`}>add question</Link>
+                <Link to={`/list/${list.id}/add`}>add question</Link>
                 {' | '}
                 <Link
-                    to={`/list/${listIdx}/play`}
+                    to={`/list/${list.id}/play`}
                     style={{
                         textDecoration: 'none',
                     }}
