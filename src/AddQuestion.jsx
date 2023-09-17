@@ -1,4 +1,4 @@
-import { useContext, useRef } from 'react'
+import { useContext, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import DataContext from './DataContext'
 
@@ -7,17 +7,27 @@ export default function AddQuestion({ list }) {
     const inputQuestionRef = useRef()
     const inputAnswerRef = useRef()
 
-    const onSubmit = (e) => {
-        e.preventDefault()
-        const questionValue = inputQuestionRef.current.value.trim()
-        const answerValue = inputAnswerRef.current.value.trim()
-        if (questionValue.length > 0 && answerValue.length > 0) {
-            addQuestion(list.id)(questionValue, answerValue)
-            inputQuestionRef.current.value = ''
-            inputAnswerRef.current.value = ''
-            inputQuestionRef.current.focus()
+    const onSubmit = useCallback(
+        (e) => {
+            e.preventDefault()
+            const questionValue = inputQuestionRef.current.value.trim()
+            const answerValue = inputAnswerRef.current.value.trim()
+            if (questionValue.length > 0 && answerValue.length > 0) {
+                addQuestion(list.id)(questionValue, answerValue)
+                inputQuestionRef.current.value = ''
+                inputAnswerRef.current.value = ''
+                inputQuestionRef.current.focus()
+            }
+        },
+        [list]
+    )
+
+    const onKeyDown = useCallback((e) => {
+        if (e.key === 'Enter') {
+            inputAnswerRef.current.focus()
         }
-    }
+        return e
+    }, [])
 
     return (
         <>
@@ -32,6 +42,7 @@ export default function AddQuestion({ list }) {
                         minLength="1"
                         autoFocus
                         style={{ width: '90%' }}
+                        onKeyDown={onKeyDown}
                     />
                     <input
                         ref={inputAnswerRef}
