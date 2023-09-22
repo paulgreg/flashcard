@@ -36,12 +36,12 @@ export default function List({ list }) {
                             >
                                 🗑️
                             </span>
-                            <a
-                                href={`/list/${list.id}/edit/${question.id}`}
+                            <Link
+                                to={`/list/${list.id}/edit/${question.id}`}
                                 style={{ textDecoration: 'none' }}
                             >
                                 ✏️
-                            </a>
+                            </Link>
                         </div>
                         {question.q} → {question.a}{' '}
                         <small>{computeRatio(question)}</small>

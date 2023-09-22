@@ -37,12 +37,12 @@ export default function Home() {
                             >
                                 🗑️
                             </span>
-                            <a
-                                href={`/list/${list.id}/edit`}
+                            <Link
+                                to={`/list/${list.id}/edit`}
                                 style={{ textDecoration: 'none' }}
                             >
                                 ✏️
-                            </a>
+                            </Link>
                         </div>
                         <span>
                             <Link to={`/list/${list.id}`} style={{ margin: 4 }}>
