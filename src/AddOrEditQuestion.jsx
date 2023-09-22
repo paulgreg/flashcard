@@ -1,11 +1,12 @@
-import { useContext, useRef, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { useContext, useRef, useCallback, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import DataContext from './DataContext'
 
-export default function AddQuestion({ list }) {
-    const { addQuestion } = useContext(DataContext)
+export default function AddOrEditQuestion({ list, question }) {
+    const { addQuestion, editQuestion } = useContext(DataContext)
     const inputQuestionRef = useRef()
     const inputAnswerRef = useRef()
+    const navigate = useNavigate()
 
     const onSubmit = useCallback(
         (e) => {
@@ -13,14 +14,30 @@ export default function AddQuestion({ list }) {
             const questionValue = inputQuestionRef.current.value.trim()
             const answerValue = inputAnswerRef.current.value.trim()
             if (questionValue.length > 0 && answerValue.length > 0) {
-                addQuestion(list.id)(questionValue, answerValue)
-                inputQuestionRef.current.value = ''
-                inputAnswerRef.current.value = ''
-                inputQuestionRef.current.focus()
+                if (question?.id) {
+                    editQuestion(list.id)(
+                        question.id,
+                        questionValue,
+                        answerValue
+                    )
+                    navigate(`/list/${list.id}`)
+                } else {
+                    addQuestion(list.id)(questionValue, answerValue)
+                    inputQuestionRef.current.value = ''
+                    inputAnswerRef.current.value = ''
+                    inputQuestionRef.current.focus()
+                }
             }
         },
         [list]
     )
+
+    useEffect(() => {
+        if (question) {
+            inputQuestionRef.current.value = question.q
+            inputAnswerRef.current.value = question.a
+        }
+    }, [question])
 
     const onKeyDown = useCallback((e) => {
         if (e.key === 'Enter') {
@@ -32,7 +49,6 @@ export default function AddQuestion({ list }) {
     return (
         <>
             <div className="content">
-                <h2>{list.name}</h2>
                 <form onSubmit={onSubmit}>
                     <input
                         ref={inputQuestionRef}

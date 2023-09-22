@@ -60,6 +60,11 @@ h2 {
     margin: 4px;
 }
 
+h2 {
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid white;
+}
+
 a {
     padding: 4px;
 }

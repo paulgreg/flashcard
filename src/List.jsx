@@ -25,12 +25,24 @@ export default function List({ list }) {
                             gap: 10,
                         }}
                     >
-                        <span
-                            onClick={onQuestionDelete(list, question)}
-                            style={{ cursor: 'pointer' }}
+                        <div
+                            style={{
+                                display: 'flex',
+                            }}
                         >
-                            🗑️
-                        </span>
+                            <span
+                                onClick={onQuestionDelete(list, question)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                🗑️
+                            </span>
+                            <a
+                                href={`/list/${list.id}/edit/${question.id}`}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                ✏️
+                            </a>
+                        </div>
                         {question.q} → {question.a}{' '}
                         <small>{computeRatio(question)}</small>
                     </p>

@@ -15,21 +15,44 @@ export default function App() {
         setLists(newData)
         save(newData)
     }
+    const editList = (id, name) => {
+        const newData = lists.map((list) =>
+            list.id === id ? { ...list, name } : list
+        )
+        setLists(newData)
+        save(newData)
+    }
     const addQuestion = (listId) => (q, a) => {
-        const newData = lists.map((list) => {
-            if (listId === list.id)
-                return {
-                    ...list,
-                    questions: [
-                        {
-                            id: getId(),
-                            q,
-                            a,
-                        },
-                    ].concat(list.questions),
-                }
-            return list
-        })
+        const newData = lists.map((list) =>
+            listId === list.id
+                ? {
+                      ...list,
+                      questions: [
+                          {
+                              id: getId(),
+                              q,
+                              a,
+                          },
+                      ].concat(list.questions),
+                  }
+                : list
+        )
+        setLists(newData)
+        save(newData)
+    }
+    const editQuestion = (listId) => (questionId, q, a) => {
+        const newData = lists.map((list) =>
+            listId === list.id
+                ? {
+                      ...list,
+                      questions: list.questions.map((question) =>
+                          question.id === questionId
+                              ? { ...question, a, q }
+                              : question
+                      ),
+                  }
+                : list
+        )
         setLists(newData)
         save(newData)
     }
@@ -155,8 +178,10 @@ export default function App() {
             value={{
                 lists,
                 addList,
+                editList,
                 delList,
                 addQuestion,
+                editQuestion,
                 delQuestion,
                 setScore,
                 key,

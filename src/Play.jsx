@@ -6,7 +6,6 @@ import DataContext from './DataContext'
 const styleScore = {
     cursor: 'pointer',
     padding: '1em',
-    width: '90%',
 }
 
 const usePickQuestion = (list) => {
@@ -59,21 +58,14 @@ export default function Play({ list, index }) {
     return (
         <>
             <div className="content" onClick={onClick}>
-                <h2>{list.name}</h2>
                 <p
                     style={{
-                        height: 'calc(100% - 120px)',
+                        height: '100%',
                         display: 'grid',
                         placeItems: 'center',
-                        fontSize: '50px',
+                        fontSize: '30px',
                     }}
                 >
-                    {odd && (
-                        <span style={styleScore} data-score="1">
-                            👍
-                        </span>
-                    )}
-
                     {even ? (
                         question.q
                     ) : (
@@ -85,11 +77,25 @@ export default function Play({ list, index }) {
                             {question.a}
                         </strong>
                     )}
-                    {odd && (
-                        <span style={styleScore} data-score="0">
-                            👎
-                        </span>
-                    )}
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-evenly',
+                            height: '100px',
+                            width: '100%',
+                        }}
+                    >
+                        {odd && (
+                            <>
+                                <span style={styleScore} data-score="1">
+                                    👍
+                                </span>
+                                <span style={styleScore} data-score="0">
+                                    👎
+                                </span>
+                            </>
+                        )}
+                    </div>
                 </p>
             </div>
             <footer>

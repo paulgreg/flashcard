@@ -23,22 +23,33 @@ export default function Home() {
                             gap: 10,
                         }}
                     >
-                        <span
-                            onClick={onDelete(list)}
+                        <div
                             style={{
-                                margin: 'auto 0 auto 8px',
-                                cursor: 'pointer',
+                                display: 'flex',
                             }}
                         >
-                            🗑️
-                        </span>
+                            <span
+                                onClick={onDelete(list)}
+                                style={{
+                                    cursor: 'pointer',
+                                    padding: '4px',
+                                }}
+                            >
+                                🗑️
+                            </span>
+                            <a
+                                href={`/list/${list.id}/edit`}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                ✏️
+                            </a>
+                        </div>
                         <span>
                             <Link to={`/list/${list.id}`} style={{ margin: 4 }}>
                                 {list.name}
                             </Link>
-                            <small style={{ marign: 'auto 10' }}>
-                                ({list.questions.length} question
-                                {list.questions.length > 1 ? 's' : ''})
+                            <small style={{ fontSize: '.7em' }}>
+                                ({list.questions.length})
                             </small>
                         </span>
                         {list.questions.length ? (
