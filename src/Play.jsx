@@ -15,21 +15,22 @@ const usePickQuestion = (list) => {
     )
 
     const next = useCallback(() => {
-        if (idx === questions.length) {
+        const nextIdx = idx + 1
+        if (nextIdx === questions.length) {
             setIdx(0)
-            const questionsResorted = questions.sort(sortQuestionsByScore)
+            const questionsResorted = list.questions.sort(sortQuestionsByScore)
             setQuestions(questionsResorted)
             return questionsResorted[0]
         } else {
-            setIdx(idx + 1)
-            return questions[idx]
+            setIdx(nextIdx)
+            return questions[nextIdx]
         }
     }, [idx, questions])
 
     return { first: questions[0], next }
 }
 
-export default function Play({ list, index }) {
+export default function Play({ list }) {
     const [step, setStep] = useState(0)
     const { first, next } = usePickQuestion(list)
     const [question, setQuestion] = useState(first)
@@ -42,14 +43,15 @@ export default function Play({ list, index }) {
                 if (e.target.tagName === 'SPAN') {
                     const score = parseInt(e.target.dataset.score, 10)
                     setScore(list.id, question.id, score)
-                    setQuestion(next())
+                    const nextQuestion = next()
+                    setQuestion(nextQuestion)
                 } else {
                     return
                 }
             }
             setStep((nb) => nb + 1)
         },
-        [step, next]
+        [step, question, next]
     )
 
     const even = step % 2 === 0
@@ -58,7 +60,7 @@ export default function Play({ list, index }) {
     return (
         <>
             <div className="content" onClick={onClick}>
-                <p
+                <div
                     style={{
                         height: '100%',
                         display: 'grid',
@@ -96,7 +98,7 @@ export default function Play({ list, index }) {
                             </>
                         )}
                     </div>
-                </p>
+                </div>
             </div>
             <footer>
                 <Link to={`/list/${list.id}`}>back</Link>
