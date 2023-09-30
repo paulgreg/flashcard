@@ -1,7 +1,29 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import DataContext from './DataContext'
-import { computeRatio, sortQuestionsByScore } from './utils'
+import { sortQuestionsByScore, limitNumber } from './utils'
+
+const QuestionScore = ({ question }) => {
+    if (!question.count) return null
+
+    const styleNb = {
+        fontSize: '.75em',
+    }
+    return (
+        <div style={{ display: 'flex', fontSize: '.8em' }}>
+            <span>
+                👍
+                <span style={styleNb}>{limitNumber(question.score)}</span>
+            </span>
+            <span style={{ paddingLeft: '.2em' }}>
+                👎
+                <span style={styleNb}>
+                    {limitNumber(question.count - question.score)}
+                </span>
+            </span>
+        </div>
+    )
+}
 
 export default function List({ list }) {
     const { delQuestion } = useContext(DataContext)
@@ -44,7 +66,7 @@ export default function List({ list }) {
                             </Link>
                         </div>
                         {question.q} → {question.a}{' '}
-                        <small>{computeRatio(question)}</small>
+                        <QuestionScore question={question} />
                     </p>
                 ))}
             </div>
