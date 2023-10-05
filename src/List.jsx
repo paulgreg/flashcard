@@ -10,7 +10,9 @@ const QuestionScore = ({ question }) => {
         fontSize: '.75em',
     }
     return (
-        <div style={{ display: 'flex', fontSize: '.8em' }}>
+        <div
+            style={{ display: 'flex', justifyContent: 'end', fontSize: '.8em' }}
+        >
             <span>
                 👍
                 <span style={styleNb}>{limitNumber(question.score)}</span>
