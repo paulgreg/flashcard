@@ -14,59 +14,64 @@ export default function Home() {
         <>
             <div className="content">
                 {lists.length === 0 && <p>No list</p>}
-                {lists.map((list) => (
-                    <p
-                        key={list.id}
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 10fr 1fr',
-                            gap: 10,
-                        }}
-                    >
+                {lists
+                    .sort((l1, l2) => l1.name.localeCompare(l2.name))
+                    .map((list) => (
                         <div
+                            key={list.id}
                             style={{
-                                display: 'flex',
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 10fr 1fr',
+                                gap: 10,
                             }}
                         >
-                            <span
-                                onClick={onDelete(list)}
+                            <div
                                 style={{
-                                    cursor: 'pointer',
-                                    padding: '4px',
+                                    display: 'flex',
                                 }}
                             >
-                                🗑️
+                                <span
+                                    onClick={onDelete(list)}
+                                    style={{
+                                        cursor: 'pointer',
+                                        padding: '4px',
+                                    }}
+                                >
+                                    🗑️
+                                </span>
+                                <Link
+                                    to={`/list/${list.id}/edit`}
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    ✏️
+                                </Link>
+                            </div>
+                            <span>
+                                <Link
+                                    to={`/list/${list.id}`}
+                                    style={{ margin: 4 }}
+                                >
+                                    {list.name}
+                                </Link>
+                                <small style={{ fontSize: '.7em' }}>
+                                    ({list.questions.length})
+                                </small>
                             </span>
-                            <Link
-                                to={`/list/${list.id}/edit`}
-                                style={{ textDecoration: 'none' }}
-                            >
-                                ✏️
-                            </Link>
+                            {list.questions.length ? (
+                                <Link
+                                    to={`/list/${list.id}/play`}
+                                    style={{
+                                        margin: 'auto 8px auto 0',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    ▶
+                                </Link>
+                            ) : (
+                                <span></span>
+                            )}
                         </div>
-                        <span>
-                            <Link to={`/list/${list.id}`} style={{ margin: 4 }}>
-                                {list.name}
-                            </Link>
-                            <small style={{ fontSize: '.7em' }}>
-                                ({list.questions.length})
-                            </small>
-                        </span>
-                        {list.questions.length ? (
-                            <Link
-                                to={`/list/${list.id}/play`}
-                                style={{
-                                    margin: 'auto 8px auto 0',
-                                    textDecoration: 'none',
-                                }}
-                            >
-                                ▶
-                            </Link>
-                        ) : (
-                            <span></span>
-                        )}
-                    </p>
-                ))}
+                    ))}
             </div>
             <footer>
                 {Settings.saveOnline && (
