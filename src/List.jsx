@@ -74,15 +74,19 @@ export default function List({ list }) {
             </div>
             <footer>
                 <Link to={`/list/${list.id}/add`}>add question</Link>
-                {' | '}
-                <Link
-                    to={`/list/${list.id}/play`}
-                    style={{
-                        textDecoration: 'none',
-                    }}
-                >
-                    ▶
-                </Link>
+                {list.questions.length > 0 && (
+                    <>
+                        {' | '}
+                        <Link
+                            to={`/list/${list.id}/play`}
+                            style={{
+                                textDecoration: 'none',
+                            }}
+                        >
+                            ▶
+                        </Link>
+                    </>
+                )}
             </footer>
         </>
     )

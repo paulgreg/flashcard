@@ -57,7 +57,7 @@ export default function Home() {
                                     ({list.questions.length})
                                 </small>
                             </span>
-                            {list.questions.length ? (
+                            {list.questions.length > 0 ? (
                                 <Link
                                     to={`/list/${list.id}/play`}
                                     style={{
