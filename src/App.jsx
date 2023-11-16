@@ -22,32 +22,40 @@ export default function App() {
         setLists(newData)
         save(newData)
     }
-    const addQuestion = (listId) => (q, a) => {
-        const newData = lists.map((list) =>
-            listId === list.id
-                ? {
-                      ...list,
-                      questions: [
-                          {
-                              id: getId(),
-                              q,
-                              a,
-                          },
-                      ].concat(list.questions),
-                  }
-                : list
-        )
-        setLists(newData)
-        save(newData)
-    }
-    const editQuestion = (listId) => (questionId, q, a) => {
+    const addQuestion =
+        (listId) =>
+        (q, a, v = true) => {
+            const newData = lists.map((list) =>
+                listId === list.id
+                    ? {
+                          ...list,
+                          questions: [
+                              {
+                                  id: getId(),
+                                  q,
+                                  a,
+                                  v,
+                              },
+                          ].concat(list.questions),
+                      }
+                    : list
+            )
+            setLists(newData)
+            save(newData)
+        }
+    const editQuestion = (listId) => (questionId, q, a, v) => {
         const newData = lists.map((list) =>
             listId === list.id
                 ? {
                       ...list,
                       questions: list.questions.map((question) =>
                           question.id === questionId
-                              ? { ...question, a, q }
+                              ? {
+                                    ...question,
+                                    a,
+                                    q,
+                                    v,
+                                }
                               : question
                       ),
                   }

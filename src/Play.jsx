@@ -1,6 +1,6 @@
 import { useContext, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { sortQuestionsByScore } from './utils'
+import { filterNonVisible, sortQuestionsByScore } from './utils'
 import DataContext from './DataContext'
 
 const styleScore = {
@@ -11,14 +11,16 @@ const styleScore = {
 const usePickQuestion = (list) => {
     const [idx, setIdx] = useState(0)
     const [questions, setQuestions] = useState(
-        list.questions.sort(sortQuestionsByScore)
+        filterNonVisible(list.questions).sort(sortQuestionsByScore)
     )
 
     const next = useCallback(() => {
         const nextIdx = idx + 1
         if (nextIdx === questions.length) {
             setIdx(0)
-            const questionsResorted = list.questions.sort(sortQuestionsByScore)
+            const questionsResorted = filterNonVisible(list.questions).sort(
+                sortQuestionsByScore
+            )
             setQuestions(questionsResorted)
             return questionsResorted[0]
         } else {

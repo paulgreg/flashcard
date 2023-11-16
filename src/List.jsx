@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import DataContext from './DataContext'
 import { sortQuestionsByScore, limitNumber } from './utils'
@@ -28,12 +28,25 @@ const QuestionScore = ({ question }) => {
 }
 
 export default function List({ list }) {
-    const { delQuestion } = useContext(DataContext)
+    const { editQuestion, delQuestion } = useContext(DataContext)
 
     const onQuestionDelete = (list, question) => () => {
         if (window.confirm(`Delete question ${question.q} ?`))
             delQuestion(list.id, question.id)
     }
+
+    const onVisibleChange = useCallback(
+        (list, question) => (e) => {
+            e.stopPropagation()
+            editQuestion(list.id)(
+                question.id,
+                question.q,
+                question.a,
+                e.target.checked
+            )
+        },
+        [editQuestion]
+    )
 
     return (
         <>
@@ -41,7 +54,7 @@ export default function List({ list }) {
                 <h2>{list.name}</h2>
                 {list.questions.length === 0 && <p>No question</p>}
                 {list.questions.sort(sortQuestionsByScore).map((question) => (
-                    <p
+                    <div
                         key={question.id}
                         style={{
                             display: 'grid',
@@ -68,8 +81,18 @@ export default function List({ list }) {
                             </Link>
                         </div>
                         {question.q} → {question.a}{' '}
-                        <QuestionScore question={question} />
-                    </p>
+                        <div>
+                            <label style={{ fontSize: '16px' }}>
+                                <span>visible</span>
+                                <input
+                                    type="checkbox"
+                                    checked={question.v}
+                                    onChange={onVisibleChange(list, question)}
+                                />
+                            </label>
+                            <QuestionScore question={question} />
+                        </div>
+                    </div>
                 ))}
             </div>
             <footer>

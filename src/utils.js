@@ -4,6 +4,9 @@ export const sortQuestionsByScore = (q1, q2) => {
     return q1Score - q2Score
 }
 
+export const filterNonVisible = (questions) =>
+    questions.filter((q) => q.v ?? true)
+
 export const getId = () => Date.now()
 
 export const limitNumber = (nb = 0) =>

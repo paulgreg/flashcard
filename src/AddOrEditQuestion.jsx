@@ -18,7 +18,8 @@ export default function AddOrEditQuestion({ list, question }) {
                     editQuestion(list.id)(
                         question.id,
                         questionValue,
-                        answerValue
+                        answerValue,
+                        question.v
                     )
                     navigate(`/list/${list.id}`)
                 } else {
