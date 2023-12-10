@@ -1,4 +1,4 @@
-import { useContext, useState, useCallback } from 'react'
+import { useEffect, useContext, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { filterNonVisible, sortQuestionsByScore } from './utils'
 import DataContext from './DataContext'
@@ -32,32 +32,60 @@ const usePickQuestion = (list) => {
     return { first: questions[0], next }
 }
 
+const OK = 1
+const KO = 0
+
 export default function Play({ list }) {
     const [step, setStep] = useState(0)
     const { first, next } = usePickQuestion(list)
     const [question, setQuestion] = useState(first)
     const { setScore } = useContext(DataContext)
 
-    const onClick = useCallback(
-        (e) => {
-            const odd = step % 2 !== 0
-            if (odd) {
-                if (e.target.tagName === 'SPAN') {
-                    const score = parseInt(e.target.dataset.score, 10)
-                    setScore(list.id, question.id, score)
-                    const nextQuestion = next()
-                    setQuestion(nextQuestion)
-                } else {
-                    return
-                }
-            }
-            setStep((nb) => nb + 1)
-        },
-        [step, question, next]
-    )
-
     const even = step % 2 === 0
     const odd = !even
+
+    const updateScoreAndGoToNextQuestion = useCallback(
+        (score) => {
+            setScore(list.id, question.id, score)
+            setQuestion(next())
+            setStep((nb) => nb + 1)
+        },
+        [list, question, setScore, setQuestion, next, setStep]
+    )
+
+    const onClick = useCallback(
+        (e) => {
+            if (even) {
+                setStep((nb) => nb + 1)
+            } else if (e.target.tagName === 'SPAN') {
+                updateScoreAndGoToNextQuestion(
+                    parseInt(e.target.dataset.score, 10)
+                )
+            }
+        },
+        [even, setStep, updateScoreAndGoToNextQuestion]
+    )
+
+    const handleKeyDownEvent = useCallback(
+        (e) => {
+            if (even && e.key === 'ArrowDown') {
+                setStep((nb) => nb + 1)
+            } else if (odd) {
+                if (e.key === 'ArrowLeft') {
+                    updateScoreAndGoToNextQuestion(KO)
+                } else if (e.key === 'ArrowRight') {
+                    updateScoreAndGoToNextQuestion(OK)
+                }
+            }
+        },
+        [even, odd, setStep, updateScoreAndGoToNextQuestion]
+    )
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDownEvent, true)
+        return () =>
+            document.removeEventListener('keydown', handleKeyDownEvent, true)
+    }, [handleKeyDownEvent])
 
     return (
         <>
@@ -91,11 +119,11 @@ export default function Play({ list }) {
                     >
                         {odd && (
                             <>
-                                <span style={styleScore} data-score="1">
-                                    👍
-                                </span>
-                                <span style={styleScore} data-score="0">
+                                <span style={styleScore} data-score={KO}>
                                     👎
+                                </span>
+                                <span style={styleScore} data-score={OK}>
+                                    👍
                                 </span>
                             </>
                         )}
