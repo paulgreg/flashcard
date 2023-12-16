@@ -81,6 +81,8 @@ export default function Home() {
                     </>
                 )}
                 <Link to="/list/add">add a list</Link>
+                {' | '}
+                <Link to="/fusion">fusion</Link>
             </footer>
         </>
     )

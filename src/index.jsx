@@ -6,6 +6,7 @@ import Home from './Home'
 import List from './List'
 import AddOrEditList from './AddOrEditList'
 import AddOrEditQuestion from './AddOrEditQuestion'
+import Fusion from './Fusion'
 import Play from './Play'
 import Config from './Config'
 import Error from './Error'
@@ -13,18 +14,18 @@ import DataContext from './DataContext'
 import './index.css'
 
 const validate = (lists, listIdStr, questionIdStr) => (Component) => {
-    if (!listIdStr || !listIdStr.match(/\d+/)) return <Error />
-    const listId = parseInt(listIdStr, 10)
+    if (!listIdStr || !listIdStr.match(/\w+/)) return <Error />
 
-    const list = lists.find((list) => list.id === listId)
+    const list = lists.find((list) => String(list.id) === listIdStr)
     if (!list) return <Error />
 
     let question
 
     if (questionIdStr) {
-        if (!questionIdStr.match(/\d+/)) return <Error />
-        const questionId = parseInt(questionIdStr, 10)
-        question = list.questions.find((question) => question.id === questionId)
+        if (!questionIdStr.match(/\w+/)) return <Error />
+        question = list.questions.find(
+            (question) => String(question.id) === questionIdStr
+        )
     }
 
     return <Component list={list} question={question} />
@@ -46,6 +47,7 @@ root.render(
             <Routes>
                 <Route path="/" element={<App />}>
                     <Route index element={<Home />} />
+                    <Route path="/fusion" element={<Fusion />} />
                     <Route path="/list/add" element={<AddOrEditList />} />
                     <Route
                         path="/list/:listId"

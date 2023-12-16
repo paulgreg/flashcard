@@ -10,8 +10,8 @@ export default function App() {
     const [lists, setLists] = useState([])
     const [key, setKey] = useState(localStorage.getItem('flashcard-key'))
 
-    const addList = (name) => {
-        const newData = [{ id: getId(), name, questions: [] }].concat(lists)
+    const addList = (name, questions = []) => {
+        const newData = [{ id: getId(), name, questions }].concat(lists)
         setLists(newData)
         save(newData)
     }

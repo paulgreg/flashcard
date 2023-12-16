@@ -23,6 +23,11 @@ button {
     display: block;
     text-transform: uppercase;
 }
+button[disabled] {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
 .app {
     position: absolute;
     top: 0;
