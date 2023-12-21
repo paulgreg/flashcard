@@ -1,6 +1,10 @@
 {
     "name": "Flashcard",
-    "short_name": "FC",
+    "short_name": "Flashcard",
+    "start_url": "./",
+    "display": "standalone",
+    "theme_color": "#fc997c",
+    "background_color": "#2e4c6d",
     "icons": [
         {
             "src": "logo-128.png",
@@ -22,9 +26,5 @@
             "sizes": "any",
             "type": "image/svg"
         }
-    ],
-    "start_url": "./",
-    "display": "standalone",
-    "theme_color": "#fc997c",
-    "background_color": "#2e4c6d"
+    ]
 }
