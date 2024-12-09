@@ -19,6 +19,7 @@ export default function Home() {
                     .map((list) => (
                         <div
                             key={list.id}
+                            className="row"
                             style={{
                                 display: 'grid',
                                 gridTemplateColumns: '1fr 10fr 1fr',

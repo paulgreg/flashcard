@@ -77,3 +77,13 @@ a {
 .error {
     color: #fc997c;
 }
+
+.row:active,
+.row:hover {
+    color: #2e4c6d;
+    background-color: #9fc8f3;
+}
+.row:active a,
+.row:hover a {
+    color: #2e4c6d;
+}
