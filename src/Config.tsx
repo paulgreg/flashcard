@@ -1,15 +1,16 @@
-import { useState, useContext, useRef } from 'react'
+import React, { useState, useRef, MouseEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import DataContext from './DataContext'
+import { useDataContext } from './DataContext'
 
-export default function Home() {
-    const inputRef = useRef()
+const Home = () => {
+    const inputRef = useRef<HTMLInputElement>(null)
     const navigate = useNavigate()
-    const [error, setError] = useState()
-    const { key, initLoad, initSave } = useContext(DataContext)
+    const [error, setError] = useState<string | undefined>()
+    const { key, initLoad, initSave } = useDataContext()
 
-    const commonCheck = (e) => {
+    const commonCheck = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
+        if (!inputRef.current) return false
         if (!inputRef.current.value) {
             setError('Empty value')
             return false
@@ -22,14 +23,14 @@ export default function Home() {
         return true
     }
 
-    const onLoad = (e) => {
-        if (commonCheck(e)) {
+    const onLoad = (e: MouseEvent<HTMLButtonElement>) => {
+        if (inputRef.current && commonCheck(e)) {
             initLoad(inputRef.current.value)
             navigate('/')
         }
     }
-    const onSave = (e) => {
-        if (commonCheck(e)) {
+    const onSave = (e: MouseEvent<HTMLButtonElement>) => {
+        if (inputRef.current && commonCheck(e)) {
             initSave(inputRef.current.value)
             navigate('/')
         }
@@ -44,10 +45,10 @@ export default function Home() {
                             ref={inputRef}
                             type="text"
                             name="key"
-                            defaultValue={key}
+                            defaultValue={key ?? ''}
                             placeholder="bob"
-                            minLength="3"
-                            maxLength="32"
+                            minLength={3}
+                            maxLength={32}
                             pattern="[a-zA-Z0-9]+"
                             style={{ width: '90%' }}
                             autoFocus
@@ -94,3 +95,5 @@ export default function Home() {
         </>
     )
 }
+
+export default Home

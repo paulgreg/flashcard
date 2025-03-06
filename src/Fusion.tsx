@@ -1,16 +1,16 @@
-import { useCallback, useContext, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useCallback, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import DataContext from './DataContext'
+import { useDataContext } from './DataContext'
 import { getId } from './utils'
 
-export default function Fusion() {
-    const { lists, addList } = useContext(DataContext)
-    const [selection, setSelection] = useState([])
+const Fusion = () => {
+    const { lists, addList } = useDataContext()
+    const [selection, setSelection] = useState<Array<string>>([])
     const [listName, setListName] = useState('')
     const navigate = useNavigate()
 
     const onCheckboxChange = useCallback(
-        (listId) => (e) => {
+        (listId: string) => (e: ChangeEvent<HTMLInputElement>) => {
             e.stopPropagation()
             setSelection((selection) => {
                 if (selection.includes(listId)) {
@@ -23,13 +23,14 @@ export default function Fusion() {
         [setSelection]
     )
     const onInputChange = useCallback(
-        (e) => {
-            setListName(e.target.value)
+        (e: ChangeEvent<HTMLInputElement>) => {
+            const target = e.target as HTMLInputElement
+            setListName(target.value)
         },
         [setListName]
     )
     const onFormSubmit = useCallback(
-        (e) => {
+        (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault()
             const listsToFusion = lists.filter(({ id }) =>
                 selection.includes(id)
@@ -90,7 +91,7 @@ export default function Fusion() {
                         placeholder="new list name"
                         style={{ margin: '1em' }}
                         value={listName}
-                        minLength="1"
+                        minLength={1}
                         required
                         onChange={onInputChange}
                     />
@@ -110,3 +111,5 @@ export default function Fusion() {
         </>
     )
 }
+
+export default Fusion

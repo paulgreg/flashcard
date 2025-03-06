@@ -1,29 +1,44 @@
-import { useContext, useRef, useCallback, useEffect } from 'react'
+import React, {
+    useRef,
+    useCallback,
+    useEffect,
+    FormEvent,
+    KeyboardEvent,
+} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import DataContext from './DataContext'
+import { useDataContext } from './DataContext'
+import { FlashcardComponent } from './Types'
 
-export default function AddOrEditQuestion({ list, question }) {
-    const { addQuestion, editQuestion } = useContext(DataContext)
-    const inputQuestionRef = useRef()
-    const inputAnswerRef = useRef()
+const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
+    list,
+    question,
+}) => {
+    const { addQuestion, editQuestion } = useDataContext()
+    const inputQuestionRef = useRef<HTMLInputElement>(null)
+    const inputAnswerRef = useRef<HTMLInputElement>(null)
     const navigate = useNavigate()
 
     const onSubmit = useCallback(
-        (e) => {
+        (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault()
+            if (!list || !inputQuestionRef.current || !inputAnswerRef.current)
+                return
             const questionValue = inputQuestionRef.current.value.trim()
             const answerValue = inputAnswerRef.current.value.trim()
             if (questionValue.length > 0 && answerValue.length > 0) {
                 if (question?.id) {
-                    editQuestion(list.id)(
-                        question.id,
-                        questionValue,
-                        answerValue,
-                        question.v
-                    )
+                    editQuestion(list.id)({
+                        ...question,
+                        q: questionValue,
+                        a: answerValue,
+                    })
                     navigate(`/list/${list.id}`)
                 } else {
-                    addQuestion(list.id)(questionValue, answerValue)
+                    addQuestion(list.id)({
+                        q: questionValue,
+                        a: answerValue,
+                        v: true,
+                    })
                     inputQuestionRef.current.value = ''
                     inputAnswerRef.current.value = ''
                     inputQuestionRef.current.focus()
@@ -34,18 +49,19 @@ export default function AddOrEditQuestion({ list, question }) {
     )
 
     useEffect(() => {
-        if (question) {
+        if (inputQuestionRef.current && inputAnswerRef.current && question) {
             inputQuestionRef.current.value = question.q
             inputAnswerRef.current.value = question.a
         }
     }, [question])
 
-    const onKeyDown = useCallback((e) => {
-        if (e.key === 'Enter') {
+    const onKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+        if (inputAnswerRef.current && e.key === 'Enter') {
             inputAnswerRef.current.focus()
         }
-        return e
     }, [])
+
+    if (!list) return <></>
 
     return (
         <>
@@ -56,7 +72,7 @@ export default function AddOrEditQuestion({ list, question }) {
                         type="text"
                         name="question"
                         placeholder="a question"
-                        minLength="1"
+                        minLength={1}
                         autoFocus
                         style={{ width: '90%' }}
                         onKeyDown={onKeyDown}
@@ -66,7 +82,7 @@ export default function AddOrEditQuestion({ list, question }) {
                         type="text"
                         name="answer"
                         placeholder="the answer"
-                        minLength="1"
+                        minLength={1}
                         style={{ width: '90%' }}
                     />
                     <input type="submit" value="ok" style={{ width: '60px' }} />
@@ -85,3 +101,4 @@ export default function AddOrEditQuestion({ list, question }) {
         </>
     )
 }
+export default AddOrEditQuestion

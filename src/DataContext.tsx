@@ -1,20 +1,59 @@
-import { useState, useCallback, useEffect } from 'react'
-import { Link, Outlet } from 'react-router-dom'
-import DataContext from './DataContext'
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useMemo,
+    useState,
+} from 'react'
+import {
+    FlashcardLists,
+    FlashcardPartialQuestion,
+    FlashcardQuestion,
+    FlashcardQuestions,
+} from './Types'
 import settings from './settings.json'
 import { getId, debounce } from './utils'
 import * as jsonpatch from 'fast-json-patch'
 
 const DEBOUNCE_SAVE_TIME = 2000
 
-export default function App() {
-    const [lists, setLists] = useState([])
-    const [previousLists, setPreviousLists] = useState([])
+type DataContextType = {
+    lists: FlashcardLists
+    addList: (name: string, questions?: FlashcardQuestions) => void
+    editList: (id: string, name: string) => void
+    delList: (listId: string) => void
+    addQuestion: (
+        listId: string
+    ) => (question: FlashcardPartialQuestion) => void
+    editQuestion: (listId: string) => (question: FlashcardQuestion) => void
+    delQuestion: (listId: string, questionId: string) => void
+    setScore: (listId: string, questionId: string, score: number) => void
+    key: string | null
+    load: () => void
+    initLoad: (key: string) => void
+    initSave: (key: string) => void
+}
+
+const DataContext = createContext<DataContextType>({} as DataContextType)
+
+export const useDataContext = () => useContext(DataContext)
+
+interface DataContextProviderPropsType {
+    children: React.ReactNode | React.ReactNode[]
+}
+
+const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
+    children,
+}) => {
+    const [lists, setLists] = useState<FlashcardLists>([])
+    const [previousLists, setPreviousLists] = useState<FlashcardLists>([])
     const [newDoc, setNewDoc] = useState(true)
-    const [key, setKey] = useState(localStorage.getItem('flashcard-key'))
+    const [key, setKey] = useState<string | null>(
+        localStorage.getItem('flashcard-key')
+    )
 
     const addList = useCallback(
-        (name, questions = []) => {
+        (name: string, questions: FlashcardQuestions = []) => {
             const newData = [{ id: getId(), name, questions }].concat(lists)
             setLists(newData)
             save(newData, previousLists, newDoc)
@@ -23,7 +62,7 @@ export default function App() {
     )
 
     const editList = useCallback(
-        (id, name) => {
+        (id: string, name: string) => {
             const newData = lists.map((list) =>
                 list.id === id ? { ...list, name } : list
             )
@@ -34,30 +73,31 @@ export default function App() {
     )
 
     const addQuestion = useCallback(
-        (listId) =>
-            (q, a, v = true) => {
-                const newData = lists.map((list) =>
-                    listId === list.id
-                        ? {
-                              ...list,
-                              questions: [
-                                  {
-                                      id: getId(),
-                                      q,
-                                      a,
-                                      v,
-                                  },
-                              ].concat(list.questions),
-                          }
-                        : list
-                )
-                setLists(newData)
-                save(newData, previousLists, newDoc)
-            },
+        (listId: string) => (question: FlashcardPartialQuestion) => {
+            const { q, a, v = true } = question
+            const newData = lists.map((list) =>
+                listId === list.id
+                    ? {
+                          ...list,
+                          questions: [
+                              {
+                                  id: getId(),
+                                  q,
+                                  a,
+                                  v,
+                              },
+                          ].concat(list.questions),
+                      }
+                    : list
+            )
+            setLists(newData)
+            save(newData, previousLists, newDoc)
+        },
         [lists, previousLists, newDoc]
     )
     const editQuestion = useCallback(
-        (listId) => (questionId, q, a, v) => {
+        (listId: string) => (question: FlashcardQuestion) => {
+            const { id: questionId, q, a, v } = question
             const newData = lists.map((list) =>
                 listId === list.id
                     ? {
@@ -81,17 +121,16 @@ export default function App() {
         [lists, previousLists, newDoc]
     )
     const delList = useCallback(
-        (listId) => {
+        (listId: string) => {
             const newData = lists.filter((list) => list.id !== listId)
             setLists(newData)
-            save(newData)
             save(newData, previousLists, newDoc)
         },
         [lists, previousLists, newDoc]
     )
 
     const setScore = useCallback(
-        (listId, questionId, score) => {
+        (listId: string, questionId: string, score: number) => {
             const newData = lists.map((list) => {
                 if (list.id === listId) {
                     const newQuestions = list.questions.map((question) => {
@@ -118,7 +157,7 @@ export default function App() {
     )
 
     const delQuestion = useCallback(
-        (listId, questionId) => {
+        (listId: string, questionId: string) => {
             const newData = lists.map((list) => {
                 if (listId === list.id) {
                     return {
@@ -137,7 +176,7 @@ export default function App() {
     )
 
     const loadOnline = useCallback(
-        async (key) =>
+        async (key: string) =>
             fetch(`${settings.saveUrl}/${key}.json`, {
                 headers: {
                     Authorization: `Basic ${settings.authorization}`,
@@ -177,7 +216,11 @@ export default function App() {
         setPreviousLists(serverData ?? [])
     }, [loadOnline, setLists])
 
-    const save = (newData, previousData, newDoc) => {
+    const save = (
+        newData: FlashcardLists,
+        previousData: FlashcardLists,
+        newDoc: boolean
+    ) => {
         localStorage.setItem('flashcard', JSON.stringify(newData))
         if (settings.saveOnline) {
             const key = localStorage.getItem('flashcard-key')
@@ -186,39 +229,47 @@ export default function App() {
     }
 
     const saveOnline = useCallback(
-        debounce((key, data, previousData, newDoc) => {
-            let method
-            let bodyRaw
-            if (!newDoc && previousData) {
-                method = 'PATCH'
-                bodyRaw = jsonpatch.compare(previousData, data)
-            } else {
-                method = 'POST'
-                bodyRaw = data
-            }
+        debounce(
+            (
+                key: string,
+                data: FlashcardLists,
+                previousData: FlashcardLists,
+                newDoc: boolean
+            ) => {
+                let method
+                let bodyRaw
+                if (!newDoc && previousData) {
+                    method = 'PATCH'
+                    bodyRaw = jsonpatch.compare(previousData, data)
+                } else {
+                    method = 'POST'
+                    bodyRaw = data
+                }
 
-            return fetch(`${settings.saveUrl}/${key}.json`, {
-                method,
-                mode: 'cors',
-                headers: {
-                    Authorization: `Basic ${settings.authorization}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bodyRaw),
-            }).then(() => {
-                setPreviousLists(data)
-                setNewDoc(false)
-            })
-        }, DEBOUNCE_SAVE_TIME),
+                return fetch(`${settings.saveUrl}/${key}.json`, {
+                    method,
+                    mode: 'cors',
+                    headers: {
+                        Authorization: `Basic ${settings.authorization}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(bodyRaw),
+                }).then(() => {
+                    setPreviousLists(data)
+                    setNewDoc(false)
+                })
+            },
+            DEBOUNCE_SAVE_TIME
+        ),
         []
     )
 
-    const initSave = async (key) => {
+    const initSave = async (key: string) => {
         setKey(key)
         localStorage.setItem('flashcard-key', key)
-        saveOnline(key, lists)
+        saveOnline(key, lists, [], newDoc)
     }
-    const initLoad = async (key) => {
+    const initLoad = async (key: string) => {
         setKey(key)
         localStorage.setItem('flashcard-key', key)
         const json = await loadOnline(key)
@@ -226,32 +277,42 @@ export default function App() {
         setPreviousLists(json)
     }
 
-    useEffect(() => {
-        load()
-    }, [load])
+    const contextValue = useMemo(
+        () => ({
+            lists,
+            addList,
+            editList,
+            delList,
+            addQuestion,
+            editQuestion,
+            delQuestion,
+            setScore,
+            key,
+            initLoad,
+            initSave,
+            load,
+        }),
+        [
+            lists,
+            addList,
+            editList,
+            delList,
+            addQuestion,
+            editQuestion,
+            delQuestion,
+            setScore,
+            key,
+            initLoad,
+            initSave,
+            load,
+        ]
+    )
 
     return (
-        <DataContext.Provider
-            value={{
-                lists,
-                addList,
-                editList,
-                delList,
-                addQuestion,
-                editQuestion,
-                delQuestion,
-                setScore,
-                key,
-                initLoad,
-                initSave,
-            }}
-        >
-            <div className="app">
-                <header>
-                    <Link to="/">Flashcard</Link>
-                </header>
-                <Outlet />
-            </div>
+        <DataContext.Provider value={contextValue}>
+            {children}
         </DataContext.Provider>
     )
 }
+
+export default DataContextProvider

@@ -1,15 +1,17 @@
-import { useContext } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import DataContext from './DataContext'
+import { useDataContext } from './DataContext'
 import Settings from './settings.json'
+import { FlashcardList } from './Types'
 
-export default function Home() {
-    const { lists, delList } = useContext(DataContext)
-    const onDelete =
-        ({ name, id }) =>
-        () => {
-            if (window.confirm(`Delete list ${name} ?`)) delList(id)
-        }
+const Home = () => {
+    const { lists, delList } = useDataContext()
+
+    const onDelete = (list: FlashcardList) => () => {
+        const { name, id } = list
+        if (window.confirm(`Delete list ${name} ?`)) delList(id)
+    }
+
     return (
         <>
             <div className="content">
@@ -88,3 +90,5 @@ export default function Home() {
         </>
     )
 }
+
+export default Home

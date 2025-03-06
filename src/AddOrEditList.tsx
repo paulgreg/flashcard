@@ -1,15 +1,17 @@
-import { useEffect, useContext, useCallback, useRef } from 'react'
+import React, { useEffect, useCallback, useRef, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import DataContext from './DataContext'
+import { useDataContext } from './DataContext'
+import { FlashcardList } from './Types'
 
-export default function AddOrEditList({ list }) {
-    const { addList, editList } = useContext(DataContext)
+const AddOrEditList: React.FC<{ list?: FlashcardList }> = ({ list }) => {
+    const { addList, editList } = useDataContext()
     const navigate = useNavigate()
-    const inputRef = useRef()
+    const inputRef = useRef<HTMLInputElement>(null)
 
     const onSubmit = useCallback(
-        (e) => {
+        (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault()
+            if (!inputRef.current) return
             const value = inputRef.current.value.trim()
             if (value.length > 0) {
                 if (list?.id) editList(list.id, value)
@@ -21,6 +23,7 @@ export default function AddOrEditList({ list }) {
     )
 
     useEffect(() => {
+        if (!inputRef.current) return
         if (list) inputRef.current.value = list.name
     }, [list])
 
@@ -33,7 +36,7 @@ export default function AddOrEditList({ list }) {
                         type="text"
                         name="list"
                         placeholder="list name"
-                        minLength="1"
+                        minLength={1}
                         autoFocus
                         style={{ width: '90%' }}
                     />
@@ -45,3 +48,5 @@ export default function AddOrEditList({ list }) {
         </>
     )
 }
+
+export default AddOrEditList

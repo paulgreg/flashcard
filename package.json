@@ -6,7 +6,8 @@
     "fast-json-patch": "^3.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.2.0"
+    "react-router-dom": "^7.2.0",
+    "uuid": "^11.1.0"
   },
   "scripts": {
     "dev": "vite",
@@ -32,7 +33,11 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2",
     "vite": "^6.2.0",
     "vite-plugin-svgr": "^4.3.0"
   }

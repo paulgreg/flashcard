@@ -1,14 +1,15 @@
-import { useEffect, useContext, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { filterNonVisible, sortQuestionsByScore } from './utils'
-import DataContext from './DataContext'
+import { useDataContext } from './DataContext'
+import { FlashcardComponent, FlashcardList } from './Types'
 
 const styleScore = {
     cursor: 'pointer',
     padding: '1em',
 }
 
-const usePickQuestion = (list) => {
+const usePickQuestion = (list: FlashcardList) => {
     const [idx, setIdx] = useState(0)
     const [questions, setQuestions] = useState(
         filterNonVisible(list.questions).sort(sortQuestionsByScore)
@@ -35,17 +36,17 @@ const usePickQuestion = (list) => {
 const OK = 1
 const KO = 0
 
-export default function Play({ list }) {
+const Play: React.FC<FlashcardComponent> = ({ list }) => {
     const [step, setStep] = useState(0)
     const { first, next } = usePickQuestion(list)
     const [question, setQuestion] = useState(first)
-    const { setScore } = useContext(DataContext)
+    const { setScore } = useDataContext()
 
     const even = step % 2 === 0
     const odd = !even
 
     const updateScoreAndGoToNextQuestion = useCallback(
-        (score) => {
+        (score: number) => {
             setScore(list.id, question.id, score)
             setQuestion(next())
             setStep((nb) => nb + 1)
@@ -54,20 +55,20 @@ export default function Play({ list }) {
     )
 
     const onClick = useCallback(
-        (e) => {
+        (e: MouseEvent<HTMLDivElement>) => {
+            const target = e.target as HTMLDivElement
             if (even) {
                 setStep((nb) => nb + 1)
-            } else if (e.target.tagName === 'SPAN') {
-                updateScoreAndGoToNextQuestion(
-                    parseInt(e.target.dataset.score, 10)
-                )
+            } else if (target.tagName === 'SPAN') {
+                const score = target.dataset.score ?? '0'
+                updateScoreAndGoToNextQuestion(parseInt(score, 10))
             }
         },
         [even, setStep, updateScoreAndGoToNextQuestion]
     )
 
     const handleKeyDownEvent = useCallback(
-        (e) => {
+        (e: KeyboardEvent) => {
             if (even && e.key === 'ArrowDown') {
                 setStep((nb) => nb + 1)
             } else if (odd) {
@@ -86,6 +87,18 @@ export default function Play({ list }) {
         return () =>
             document.removeEventListener('keydown', handleKeyDownEvent, true)
     }, [handleKeyDownEvent])
+
+    if (!question)
+        return (
+            <>
+                <div className="content">
+                    <p>no question</p>
+                </div>
+                <footer>
+                    <Link to={`/list/${list.id}`}>back</Link>
+                </footer>
+            </>
+        )
 
     return (
         <>
@@ -136,3 +149,5 @@ export default function Play({ list }) {
         </>
     )
 }
+
+export default Play
