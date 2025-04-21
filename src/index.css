@@ -13,12 +13,14 @@ body {
 
 input,
 button {
-    margin-top: 20px;
     padding: 6px;
     font-size: 24px;
     color: #2e4c6d;
     border: 1px solid #2e4c6d;
     background: #daddfc;
+}
+input[type='text'] {
+    margin-top: 20px;
 }
 button {
     display: block;
@@ -79,6 +81,9 @@ a {
     color: #fc997c;
 }
 
+.row {
+    min-height: 50px;
+}
 .row:active,
 .row:hover {
     color: #2e4c6d;
