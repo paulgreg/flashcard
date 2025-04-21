@@ -57,6 +57,7 @@ const Fusion = () => {
                         .sort((l1, l2) => l1.name.localeCompare(l2.name))
                         .map((list) => (
                             <div
+                                className="row"
                                 key={list.id}
                                 style={{
                                     display: 'grid',
