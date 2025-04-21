@@ -6,7 +6,7 @@ const Home = () => {
     const inputRef = useRef<HTMLInputElement>(null)
     const navigate = useNavigate()
     const [error, setError] = useState<string | undefined>()
-    const { key, initLoad, initSave } = useDataContext()
+    const { key, initLoad } = useDataContext()
 
     const commonCheck = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
@@ -26,12 +26,6 @@ const Home = () => {
     const onLoad = (e: MouseEvent<HTMLButtonElement>) => {
         if (inputRef.current && commonCheck(e)) {
             initLoad(inputRef.current.value)
-            navigate('/')
-        }
-    }
-    const onSave = (e: MouseEvent<HTMLButtonElement>) => {
-        if (inputRef.current && commonCheck(e)) {
-            initSave(inputRef.current.value)
             navigate('/')
         }
     }
@@ -75,16 +69,6 @@ const Home = () => {
                         <small>
                             (will fetch data from server and overwrite your
                             local data if any)
-                        </small>
-                        <button
-                            style={{ margin: '1em auto 0' }}
-                            onClick={onSave}
-                        >
-                            Save
-                        </button>
-                        <small>
-                            (will save your local data on server and overwrite
-                            them on server if any)
                         </small>
                     </p>
                 </form>

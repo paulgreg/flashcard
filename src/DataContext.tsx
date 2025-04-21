@@ -31,7 +31,6 @@ type DataContextType = {
     key: string | null
     load: () => void
     initLoad: (key: string) => void
-    initSave: (key: string) => void
 }
 
 const DataContext = createContext<DataContextType>({} as DataContextType)
@@ -264,11 +263,6 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
         []
     )
 
-    const initSave = async (key: string) => {
-        setKey(key)
-        localStorage.setItem('flashcard-key', key)
-        saveOnline(key, lists, [], newDoc)
-    }
     const initLoad = async (key: string) => {
         setKey(key)
         localStorage.setItem('flashcard-key', key)
@@ -289,7 +283,6 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             setScore,
             key,
             initLoad,
-            initSave,
             load,
         }),
         [
@@ -303,7 +296,6 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             setScore,
             key,
             initLoad,
-            initSave,
             load,
         ]
     )
