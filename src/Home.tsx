@@ -17,7 +17,7 @@ const Home = () => {
             <div className="content">
                 {lists.length === 0 && <p>No list</p>}
                 {lists
-                    .sort((l1, l2) => l1.name.localeCompare(l2.name))
+                    .toSorted((l1, l2) => l1.name.localeCompare(l2.name))
                     .map((list) => (
                         <div
                             key={list.id}
