@@ -12,10 +12,8 @@ import {
     FlashcardQuestions,
 } from './Types'
 import settings from './settings.json'
-import { getId, debounce } from './utils'
+import { getId } from './utils'
 import * as jsonpatch from 'fast-json-patch'
-
-const DEBOUNCE_SAVE_TIME = 2000
 
 type DataContextType = {
     lists: FlashcardLists
@@ -228,38 +226,35 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
     }
 
     const saveOnline = useCallback(
-        debounce(
-            (
-                key: string,
-                data: FlashcardLists,
-                previousData: FlashcardLists,
-                newDoc: boolean
-            ) => {
-                let method
-                let bodyRaw
-                if (!newDoc && previousData) {
-                    method = 'PATCH'
-                    bodyRaw = jsonpatch.compare(previousData, data)
-                } else {
-                    method = 'POST'
-                    bodyRaw = data
-                }
+        (
+            key: string,
+            data: FlashcardLists,
+            previousData: FlashcardLists,
+            newDoc: boolean
+        ) => {
+            let method
+            let bodyRaw
+            if (!newDoc && previousData) {
+                method = 'PATCH'
+                bodyRaw = jsonpatch.compare(previousData, data)
+            } else {
+                method = 'POST'
+                bodyRaw = data
+            }
 
-                return fetch(`${settings.saveUrl}/${key}.json`, {
-                    method,
-                    mode: 'cors',
-                    headers: {
-                        Authorization: `Basic ${settings.authorization}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(bodyRaw),
-                }).then(() => {
-                    setPreviousLists(data)
-                    setNewDoc(false)
-                })
-            },
-            DEBOUNCE_SAVE_TIME
-        ),
+            setPreviousLists(data)
+            setNewDoc(false)
+
+            return fetch(`${settings.saveUrl}/${key}.json`, {
+                method,
+                mode: 'cors',
+                headers: {
+                    Authorization: `Basic ${settings.authorization}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bodyRaw),
+            })
+        },
         []
     )
 
