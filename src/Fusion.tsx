@@ -1,7 +1,68 @@
-import React, { ChangeEvent, FormEvent, useCallback, useState } from 'react'
+import React, {
+    memo,
+    ChangeEvent,
+    FormEvent,
+    useCallback,
+    useState,
+} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { getId } from './utils'
+
+const MemoizedList = memo(
+    ({
+        onCheckboxChange,
+    }: {
+        onCheckboxChange: (
+            listId: string
+        ) => (e: ChangeEvent<HTMLInputElement>) => void
+    }) => {
+        const { lists } = useDataContext()
+
+        return (
+            <>
+                {lists.length === 0 ? (
+                    <p>No list</p>
+                ) : (
+                    lists
+                        .toSorted((l1, l2) => l1.name.localeCompare(l2.name))
+                        .map((list) => (
+                            <div
+                                className="row"
+                                key={list.id}
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 10fr 1fr',
+                                    gap: 10,
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                    }}
+                                ></div>
+                                <label htmlFor={list.id}>
+                                    <span style={{ margin: 4 }}>
+                                        {list.name}
+                                    </span>
+                                    <small style={{ fontSize: '.7em' }}>
+                                        ({list.questions.length})
+                                    </small>
+                                </label>
+                                <input
+                                    type="checkbox"
+                                    id={list.id}
+                                    value={list.id}
+                                    onChange={onCheckboxChange(list.id)}
+                                    disabled={list.questions.length === 0}
+                                />
+                            </div>
+                        ))
+                )}
+            </>
+        )
+    }
+)
 
 const Fusion = () => {
     const { lists, addList } = useDataContext()
@@ -51,41 +112,7 @@ const Fusion = () => {
             <div className="content">
                 <form onSubmit={onFormSubmit}>
                     <p>Create a new list with questions from lists</p>
-                    {lists.length === 0 && <p>No list</p>}
-                    {lists
-                        .toSorted((l1, l2) => l1.name.localeCompare(l2.name))
-                        .map((list) => (
-                            <div
-                                className="row"
-                                key={list.id}
-                                style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '1fr 10fr 1fr',
-                                    gap: 10,
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                    }}
-                                ></div>
-                                <label htmlFor={list.id}>
-                                    <span style={{ margin: 4 }}>
-                                        {list.name}
-                                    </span>
-                                    <small style={{ fontSize: '.7em' }}>
-                                        ({list.questions.length})
-                                    </small>
-                                </label>
-                                <input
-                                    type="checkbox"
-                                    id={list.id}
-                                    value={list.id}
-                                    onChange={onCheckboxChange(list.id)}
-                                    disabled={list.questions.length === 0}
-                                />
-                            </div>
-                        ))}
+                    <MemoizedList onCheckboxChange={onCheckboxChange} />
                     <input
                         type="text"
                         placeholder="new list name"
