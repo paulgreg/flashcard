@@ -44,7 +44,7 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
 }) => {
     const [lists, setLists] = useState<FlashcardLists>([])
     const [previousLists, setPreviousLists] = useState<FlashcardLists>([])
-    const [newDoc, setNewDoc] = useState(true)
+    const [fullSave, setFullSave] = useState(true)
     const [key, setKey] = useState<string | null>(
         localStorage.getItem('flashcard-key')
     )
@@ -53,9 +53,9 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
         (name: string, questions: FlashcardQuestions = []) => {
             const newData = [{ id: getId(), name, questions }].concat(lists)
             setLists(newData)
-            save(newData, previousLists, newDoc)
+            save(newData, previousLists, fullSave)
         },
-        [lists, previousLists, newDoc]
+        [lists, previousLists, fullSave]
     )
 
     const editList = useCallback(
@@ -64,9 +64,9 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
                 list.id === id ? { ...list, name } : list
             )
             setLists(newData)
-            save(newData, previousLists, newDoc)
+            save(newData, previousLists, fullSave)
         },
-        [lists, previousLists, newDoc]
+        [lists, previousLists, fullSave]
     )
 
     const addQuestion = useCallback(
@@ -87,9 +87,9 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
                     : list
             )
             setLists(newData)
-            save(newData, previousLists, newDoc)
+            save(newData, previousLists, fullSave)
         },
-        [lists, previousLists, newDoc]
+        [lists, previousLists, fullSave]
     )
     const editQuestion = useCallback(
         (listId: string) => (question: FlashcardQuestion) => {
@@ -111,17 +111,17 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
                     : list
             )
             setLists(newData)
-            save(newData, previousLists, newDoc)
+            save(newData, previousLists, fullSave)
         },
-        [lists, previousLists, newDoc]
+        [lists, previousLists, fullSave]
     )
     const delList = useCallback(
         (listId: string) => {
             const newData = lists.filter((list) => list.id !== listId)
             setLists(newData)
-            save(newData, previousLists, newDoc)
+            save(newData, previousLists, fullSave)
         },
-        [lists, previousLists, newDoc]
+        [lists, previousLists, fullSave]
     )
 
     const setScore = useCallback(
@@ -146,9 +146,9 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
                 return list
             })
             setLists(newData)
-            save(newData, previousLists, newDoc)
+            save(newData, previousLists, fullSave)
         },
-        [lists, previousLists, newDoc]
+        [lists, previousLists, fullSave]
     )
 
     const delQuestion = useCallback(
@@ -165,9 +165,9 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
                 return list
             })
             setLists(newData)
-            save(newData, previousLists, newDoc)
+            save(newData, previousLists, fullSave)
         },
-        [lists, previousLists, newDoc]
+        [lists, previousLists, fullSave]
     )
 
     const loadOnline = useCallback(
@@ -179,11 +179,11 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             })
                 .then((response) => {
                     if (response.ok) {
-                        setNewDoc(false)
+                        setFullSave(false)
                         return response.json()
                     }
                     if (response.status === 404) {
-                        setNewDoc(true)
+                        setFullSave(true)
                         return []
                     }
                 })
@@ -214,12 +214,12 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
     const save = (
         newData: FlashcardLists,
         previousData: FlashcardLists,
-        newDoc: boolean
+        fullSave: boolean
     ) => {
         localStorage.setItem('flashcard', JSON.stringify(newData))
         if (settings.saveOnline) {
             const key = localStorage.getItem('flashcard-key')
-            if (key) saveOnline(key, newData, previousData, newDoc)
+            if (key) saveOnline(key, newData, previousData, fullSave)
         }
     }
 
@@ -228,11 +228,11 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             key: string,
             data: FlashcardLists,
             previousData: FlashcardLists,
-            newDoc: boolean
+            fullSave: boolean
         ) => {
             let method
             let bodyRaw
-            if (!newDoc && previousData) {
+            if (!fullSave && previousData) {
                 method = 'PATCH'
                 bodyRaw = jsonpatch.compare(previousData, data)
             } else {
@@ -241,7 +241,9 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             }
 
             setPreviousLists(data)
-            setNewDoc(false)
+            setFullSave(true)
+
+            const body = JSON.stringify(bodyRaw)
 
             return fetch(`${settings.saveUrl}/${key}.json`, {
                 method,
@@ -250,8 +252,22 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
                     Authorization: `Basic ${settings.authorization}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(bodyRaw),
+                body,
             })
+                .then((response) => {
+                    if (!response.ok)
+                        throw new Error(
+                            `HTTP error! status: ${response.status}`
+                        )
+                    setFullSave(false)
+                })
+                .catch((e) => {
+                    console.error(e)
+                    alert(
+                        'An error occured. App will refresh data to avoid corruption.'
+                    )
+                    location.reload()
+                })
         },
         []
     )
