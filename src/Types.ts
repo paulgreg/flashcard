@@ -1,7 +1,6 @@
 export type FlashcardPartialQuestion = {
     q: string
     a: string
-    v: boolean
 }
 
 export type FlashcardQuestion = FlashcardPartialQuestion & {

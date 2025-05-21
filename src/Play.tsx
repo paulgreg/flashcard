@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { filterNonVisible, sortQuestionsByScore } from './utils'
+import { sortQuestionsByScore } from './utils'
 import { useDataContext } from './DataContext'
 import { FlashcardComponent, FlashcardList } from './Types'
 
@@ -12,16 +12,15 @@ const styleScore = {
 const usePickQuestion = (list: FlashcardList) => {
     const [idx, setIdx] = useState(0)
     const [questions, setQuestions] = useState(
-        filterNonVisible(list.questions).sort(sortQuestionsByScore)
+        list.questions.toSorted(sortQuestionsByScore)
     )
 
     const next = useCallback(() => {
         const nextIdx = idx + 1
         if (nextIdx === questions.length) {
             setIdx(0)
-            const questionsResorted = filterNonVisible(list.questions).sort(
-                sortQuestionsByScore
-            )
+            const questionsResorted =
+                list.questions.toSorted(sortQuestionsByScore)
             setQuestions(questionsResorted)
             return questionsResorted[0]
         } else {

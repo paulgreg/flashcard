@@ -1,4 +1,4 @@
-import React, { useCallback, ChangeEvent } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { sortQuestionsByScore, limitNumber } from './utils'
@@ -31,25 +31,13 @@ const QuestionScore: React.FC<{ question: FlashcardQuestion }> = ({
 }
 
 const List: React.FC<FlashcardComponent> = ({ list }) => {
-    const { editQuestion, delQuestion } = useDataContext()
+    const { delQuestion } = useDataContext()
 
     const onQuestionDelete =
         (list: FlashcardList, question: FlashcardQuestion) => () => {
             if (window.confirm(`Delete question ${question.q} ?`))
                 delQuestion(list.id, question.id)
         }
-
-    const onVisibleChange: (
-        list: FlashcardList,
-        question: FlashcardQuestion
-    ) => (e: ChangeEvent<HTMLInputElement>) => void = useCallback(
-        (list, question) => (e) => {
-            e.stopPropagation()
-            const target = e.target as HTMLInputElement
-            editQuestion(list.id)({ ...question, v: target.checked })
-        },
-        [editQuestion]
-    )
 
     if (!list) return <></>
 
@@ -90,17 +78,6 @@ const List: React.FC<FlashcardComponent> = ({ list }) => {
                             </div>
                             {question.q} → {question.a}{' '}
                             <div>
-                                <label style={{ fontSize: '16px' }}>
-                                    <span>visible</span>
-                                    <input
-                                        type="checkbox"
-                                        checked={question.v}
-                                        onChange={onVisibleChange(
-                                            list,
-                                            question
-                                        )}
-                                    />
-                                </label>
                                 <QuestionScore question={question} />
                             </div>
                         </div>

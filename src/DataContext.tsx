@@ -71,7 +71,7 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
 
     const addQuestion = useCallback(
         (listId: string) => (question: FlashcardPartialQuestion) => {
-            const { q, a, v = true } = question
+            const { q, a } = question
             const newData = lists.map((list) =>
                 listId === list.id
                     ? {
@@ -81,7 +81,6 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
                                   id: getId(),
                                   q,
                                   a,
-                                  v,
                               },
                           ].concat(list.questions),
                       }
@@ -94,7 +93,7 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
     )
     const editQuestion = useCallback(
         (listId: string) => (question: FlashcardQuestion) => {
-            const { id: questionId, q, a, v } = question
+            const { id: questionId, q, a } = question
             const newData = lists.map((list) =>
                 listId === list.id
                     ? {
@@ -105,7 +104,6 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
                                         ...question,
                                         a,
                                         q,
-                                        v,
                                     }
                                   : question
                           ),

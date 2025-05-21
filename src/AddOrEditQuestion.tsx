@@ -37,7 +37,6 @@ const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
                     addQuestion(list.id)({
                         q: questionValue,
                         a: answerValue,
-                        v: true,
                     })
                     inputQuestionRef.current.value = ''
                     inputAnswerRef.current.value = ''
