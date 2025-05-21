@@ -35,7 +35,6 @@ const Fusion = () => {
             const listsToFusion = lists.filter(({ id }) =>
                 selection.includes(id)
             )
-            debugger
             const questions = listsToFusion
                 .flatMap(({ questions }) => questions)
                 .map((question) => ({
