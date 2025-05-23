@@ -85,6 +85,8 @@ const List: React.FC<FlashcardComponent> = ({ list }) => {
             </div>
             <footer>
                 <Link to={`/list/${list.id}/add`}>add question</Link>
+                {' | '}
+                <Link to="/search">search</Link>
                 {list.questions.length > 0 && (
                     <>
                         {' | '}

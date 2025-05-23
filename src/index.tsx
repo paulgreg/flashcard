@@ -13,6 +13,7 @@ import DataContextProvider, { useDataContext } from './DataContext'
 import { FlashcardComponent, FlashcardLists } from './Types'
 import ErrorMessage from './Error'
 import './index.css'
+import Search from './Search'
 
 type ValidateType = {
     component: React.FC<FlashcardComponent>
@@ -62,6 +63,7 @@ if (container) {
                     <Routes>
                         <Route path="/" element={<App />}>
                             <Route index element={<Home />} />
+                            <Route path="/search" element={<Search />} />
                             <Route path="/fusion" element={<Fusion />} />
                             <Route
                                 path="/list/add"

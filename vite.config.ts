@@ -5,9 +5,13 @@ import svgrPlugin from 'vite-plugin-svgr'
 export default defineConfig(() => {
     return {
         build: {
-            sourcemap: true
+            sourcemap: true,
         },
         base: './',
         plugins: [react(), svgrPlugin()],
+        test: {
+            include: ['**/*.test.js'],
+            globals: true,
+        },
     }
 })

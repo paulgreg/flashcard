@@ -81,6 +81,7 @@ a {
     color: #fc997c;
 }
 
+.rowPassive,
 .row {
     min-height: 50px;
 }

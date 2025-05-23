@@ -17,6 +17,7 @@ import * as jsonpatch from 'fast-json-patch'
 
 type DataContextType = {
     lists: FlashcardLists
+    sortedLists: FlashcardLists
     addList: (name: string, questions?: FlashcardQuestions) => void
     editList: (id: string, name: string) => void
     delList: (listId: string) => void
@@ -47,6 +48,11 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
     const [fullSave, setFullSave] = useState(true)
     const [key, setKey] = useState<string | null>(
         localStorage.getItem('flashcard-key')
+    )
+
+    const sortedLists = useMemo(
+        () => lists.toSorted((l1, l2) => l1.name.localeCompare(l2.name)),
+        [lists]
     )
 
     const addList = useCallback(
@@ -283,6 +289,7 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
     const contextValue = useMemo(
         () => ({
             lists,
+            sortedLists,
             addList,
             editList,
             delList,
@@ -296,6 +303,7 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
         }),
         [
             lists,
+            sortedLists,
             addList,
             editList,
             delList,
