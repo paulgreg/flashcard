@@ -37,7 +37,10 @@ const Search = () => {
                                       cleanStr(a).includes(filterTerm)
                               ),
                 }))
-                .filter(({ questions }) => questions.length),
+                .filter(
+                    ({ name, questions }) =>
+                        cleanStr(name).includes(filterTerm) || questions.length
+                ),
         [sortedLists, filterTerm]
     )
 
