@@ -44,7 +44,7 @@ const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
                 }
             }
         },
-        [list]
+        [addQuestion, editQuestion, list, navigate, question]
     )
 
     useEffect(() => {

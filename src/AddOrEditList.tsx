@@ -19,7 +19,7 @@ const AddOrEditList: React.FC<{ list?: FlashcardList }> = ({ list }) => {
                 navigate('/')
             }
         },
-        [list]
+        [addList, editList, list?.id, navigate]
     )
 
     useEffect(() => {

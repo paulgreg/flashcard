@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDataContext } from './DataContext'
-import { cleanStr, removeAccent } from './utils/string'
+import { cleanStr } from './utils/string'
 import { FlashcardList, FlashcardQuestion } from './Types'
 
 const Search = () => {

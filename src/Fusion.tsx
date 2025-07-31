@@ -101,7 +101,7 @@ const Fusion = () => {
             addList(listName, questions)
             navigate('/')
         },
-        [lists, listName, selection]
+        [lists, addList, listName, navigate, selection]
     )
     return (
         <>

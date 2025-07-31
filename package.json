@@ -2,6 +2,7 @@
   "name": "flashcard",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "fast-json-patch": "^3.1.1",
     "react": "^19.1.1",
@@ -12,6 +13,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --base=/flashcard/",
+    "lint": "tsc && eslint",
     "test": "vitest",
     "deploy": "npm i && ./to_ghpages"
   },
@@ -37,8 +39,12 @@
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^9.32.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
     "prettier": "^3.6.2",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
     "vite": "^7.0.6",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.2.4"

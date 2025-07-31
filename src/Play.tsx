@@ -27,7 +27,7 @@ const usePickQuestion = (list: FlashcardList) => {
             setIdx(nextIdx)
             return questions[nextIdx]
         }
-    }, [idx, questions])
+    }, [idx, list.questions, questions])
 
     return { first: questions[0], next }
 }
