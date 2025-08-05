@@ -2,11 +2,11 @@ import React, { useState, useRef, MouseEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 
-const Home = () => {
+const Config = () => {
     const inputRef = useRef<HTMLInputElement>(null)
     const navigate = useNavigate()
     const [error, setError] = useState<string | undefined>()
-    const { key, initLoad } = useDataContext()
+    const { key, setKey } = useDataContext()
 
     const commonCheck = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
@@ -25,7 +25,7 @@ const Home = () => {
 
     const onLoad = (e: MouseEvent<HTMLButtonElement>) => {
         if (inputRef.current && commonCheck(e)) {
-            initLoad(inputRef.current.value)
+            setKey(inputRef.current.value)
             navigate('/')
         }
     }
@@ -80,4 +80,4 @@ const Home = () => {
     )
 }
 
-export default Home
+export default Config

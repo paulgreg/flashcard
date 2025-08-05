@@ -1,14 +1,21 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
     FlashcardLists,
     FlashcardPartialQuestion,
     FlashcardQuestion,
     FlashcardQuestions,
+    YFlashcardList,
+    YFlashcardQuestion,
 } from './Types'
 import settings from './settings.json'
 import { getId } from './utils'
-import * as jsonpatch from 'fast-json-patch'
 import { DataContext } from './DataContext'
+import * as Y from 'yjs'
+import { IndexeddbPersistence } from 'y-indexeddb'
+import { WebsocketProvider } from 'y-websocket'
+import { useY } from 'react-yjs'
+
+const PREFIX = 'fc'
 
 interface DataContextProviderPropsType {
     children: React.ReactNode | React.ReactNode[]
@@ -17,258 +24,188 @@ interface DataContextProviderPropsType {
 const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
     children,
 }) => {
-    const [lists, setLists] = useState<FlashcardLists>([])
-    const [previousLists, setPreviousLists] = useState<FlashcardLists>([])
-    const [fullSave, setFullSave] = useState(true)
     const [key, setKey] = useState<string | null>(
         localStorage.getItem('flashcard-key')
     )
+    const guid = `${PREFIX}:${key}`
+
+    const yDoc = useMemo(() => new Y.Doc({ guid }), [guid])
+    const yLists = yDoc.getArray<Y.Map<YFlashcardList>>(`lists`)
+
+    const persistence = useRef<IndexeddbPersistence>(null)
+    const provider = useRef<WebsocketProvider>(null)
+
+    useEffect(() => {
+        persistence.current = new IndexeddbPersistence(guid, yDoc)
+        if (settings.saveOnline && settings.wsUrl) {
+            provider.current = new WebsocketProvider(settings.wsUrl, guid, yDoc)
+            return () => provider.current?.disconnect()
+        }
+    }, [guid, yDoc])
+
+    const addList = useCallback(
+        (name: string, questions: FlashcardQuestions = []) => {
+            yDoc.transact(() => {
+                const yList = new Y.Map<YFlashcardList>()
+                yList.set('id', getId())
+                yList.set('name', name)
+                const yQuestions = new Y.Array<Y.Map<YFlashcardQuestion>>()
+                if (questions?.length >= 0) {
+                    yQuestions.push(
+                        questions.map(({ id, q, a, score, count }) => {
+                            const yQuestion = new Y.Map<YFlashcardQuestion>()
+                            yQuestion.set('id', id)
+                            yQuestion.set('q', q)
+                            yQuestion.set('a', a)
+                            if (score) yQuestion.set('score', score)
+                            if (count) yQuestion.set('count', count)
+                            return yQuestion
+                        })
+                    )
+                }
+                yList.set('questions', yQuestions)
+                yLists.insert(0, [yList])
+            })
+        },
+        [yDoc, yLists]
+    )
+
+    const editList = useCallback(
+        (id: string, name: string) => {
+            const idx = yLists
+                .toArray()
+                .findIndex((list) => list.get('id') === id)
+            if (idx >= 0) {
+                yLists.get(idx).set('name', name)
+            }
+        },
+        [yLists]
+    )
+
+    const addQuestion = useCallback(
+        (listId: string) => (question: FlashcardPartialQuestion) => {
+            const { q, a } = question
+            const idx = yLists
+                .toArray()
+                .findIndex((list) => list.get('id') === listId)
+            if (idx >= 0) {
+                const yQuestions = yLists
+                    .get(idx)
+                    .get('questions') as unknown as Y.Array<
+                    Y.Map<YFlashcardQuestion>
+                >
+                if (yQuestions) {
+                    const yQuestion = new Y.Map<YFlashcardQuestion>()
+                    yQuestion.set('id', getId())
+                    yQuestion.set('q', q)
+                    yQuestion.set('a', a)
+                    yQuestions?.insert(0, [yQuestion])
+                }
+            }
+        },
+        [yLists]
+    )
+    const editQuestion = useCallback(
+        (listId: string) => (question: FlashcardQuestion) => {
+            const { id: questionId, q, a } = question
+            const idx = yLists
+                .toArray()
+                .findIndex((list) => list.get('id') === listId)
+            if (idx >= 0) {
+                const yQuestions = yLists
+                    .get(idx)
+                    .get('questions') as unknown as Y.Array<
+                    Y.Map<YFlashcardQuestion>
+                >
+                const qIdx = yQuestions
+                    .toArray()
+                    .findIndex((question) => question.get('id') === questionId)
+                if (qIdx >= 0) {
+                    yDoc.transact(() => {
+                        const yQuestion = yQuestions.get(qIdx)
+                        yQuestion.set('q', q)
+                        yQuestion.set('a', a)
+                    })
+                }
+            }
+        },
+        [yDoc, yLists]
+    )
+
+    const delList = useCallback(
+        (listId: string) => {
+            const idx = yLists
+                .toArray()
+                .findIndex((list) => list.get('id') === listId)
+            if (idx >= 0) {
+                yLists.delete(idx, 1)
+            }
+        },
+        [yLists]
+    )
+
+    const setScore = useCallback(
+        (listId: string, questionId: string, score: number) => {
+            const idx = yLists
+                .toArray()
+                .findIndex((list) => list.get('id') === listId)
+            if (idx >= 0) {
+                const yQuestions = yLists
+                    .get(idx)
+                    .get('questions') as unknown as Y.Array<
+                    Y.Map<YFlashcardQuestion>
+                >
+                const qIdx = yQuestions
+                    .toArray()
+                    .findIndex((question) => question.get('id') === questionId)
+                if (qIdx >= 0) {
+                    yDoc.transact(() => {
+                        const yQuestion = yQuestions.get(qIdx)
+                        const previousScore =
+                            (yQuestion.get('score') as number) ?? 0
+                        const previousCount =
+                            (yQuestion.get('count') as number) ?? 0
+                        yQuestion.set('score', previousScore + score)
+                        yQuestion.set('count', previousCount + 1)
+                    })
+                }
+            }
+        },
+        [yDoc, yLists]
+    )
+
+    const delQuestion = useCallback(
+        (listId: string, questionId: string) => {
+            const idx = yLists
+                .toArray()
+                .findIndex((list) => list.get('id') === listId)
+            if (idx >= 0) {
+                const yQuestions = yLists
+                    .get(idx)
+                    .get('questions') as unknown as Y.Array<
+                    Y.Map<YFlashcardQuestion>
+                >
+                const qIdx = yQuestions
+                    .toArray()
+                    .findIndex((question) => question.get('id') === questionId)
+                if (qIdx >= 0) {
+                    yQuestions.delete(qIdx, 1)
+                }
+            }
+        },
+        [yLists]
+    )
+
+    const lists = useY(yLists) as unknown as FlashcardLists
 
     const sortedLists = useMemo(
         () => lists.toSorted((l1, l2) => l1.name.localeCompare(l2.name)),
         [lists]
     )
 
-    const loadOnline = useCallback(
-        async (key: string) =>
-            fetch(`${settings.saveUrl}/${key}.json`, {
-                headers: {
-                    Authorization: `Basic ${settings.authorization}`,
-                },
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        setFullSave(false)
-                        return response.json()
-                    }
-                    if (response.status === 404) {
-                        setFullSave(true)
-                        return []
-                    }
-                })
-                .catch((e) => {
-                    console.error(e)
-                    alert('error while loading json')
-                }),
-        []
-    )
-
-    const load = useCallback(async () => {
-        let serverData, localData
-        if (settings.saveOnline) {
-            const key = localStorage.getItem('flashcard-key')
-            if (key) {
-                const json = await loadOnline(key)
-                if (json && json instanceof Array) serverData = json
-            }
-        }
-
-        const raw = localStorage.getItem('flashcard')
-        if (raw) localData = JSON.parse(raw)
-
-        setLists(serverData ?? localData ?? [])
-        setPreviousLists(serverData ?? [])
-    }, [loadOnline, setLists])
-
-    const saveOnline = useCallback(
-        (
-            key: string,
-            data: FlashcardLists,
-            previousData: FlashcardLists,
-            fullSave: boolean
-        ) => {
-            let method
-            let bodyRaw
-            if (!fullSave && previousData) {
-                method = 'PATCH'
-                bodyRaw = jsonpatch.compare(previousData, data)
-            } else {
-                method = 'POST'
-                bodyRaw = data
-            }
-
-            setPreviousLists(data)
-            setFullSave(true)
-
-            const body = JSON.stringify(bodyRaw)
-
-            return fetch(`${settings.saveUrl}/${key}.json`, {
-                method,
-                mode: 'cors',
-                headers: {
-                    Authorization: `Basic ${settings.authorization}`,
-                    'Content-Type': 'application/json',
-                },
-                body,
-            })
-                .then((response) => {
-                    if (!response.ok)
-                        throw new Error(
-                            `HTTP error! status: ${response.status}`
-                        )
-                    setFullSave(false)
-                })
-                .catch((e) => {
-                    console.error(e)
-                    alert(
-                        'An error occured. App will refresh data to avoid corruption.'
-                    )
-                    location.reload()
-                })
-        },
-        []
-    )
-    const save = useCallback(
-        (
-            newData: FlashcardLists,
-            previousData: FlashcardLists,
-            fullSave: boolean
-        ) => {
-            localStorage.setItem('flashcard', JSON.stringify(newData))
-            if (settings.saveOnline) {
-                const key = localStorage.getItem('flashcard-key')
-                if (key) saveOnline(key, newData, previousData, fullSave)
-            }
-        },
-        [saveOnline]
-    )
-
-    const addList = useCallback(
-        (name: string, questions: FlashcardQuestions = []) => {
-            const newData = [{ id: getId(), name, questions }].concat(lists)
-            setLists(newData)
-            save(newData, previousLists, fullSave)
-        },
-        [lists, save, previousLists, fullSave]
-    )
-
-    const editList = useCallback(
-        (id: string, name: string) => {
-            const newData = lists.map((list) =>
-                list.id === id ? { ...list, name } : list
-            )
-            setLists(newData)
-            save(newData, previousLists, fullSave)
-        },
-        [lists, save, previousLists, fullSave]
-    )
-
-    const addQuestion = useCallback(
-        (listId: string) => (question: FlashcardPartialQuestion) => {
-            const { q, a } = question
-            const newData = lists.map((list) =>
-                listId === list.id
-                    ? {
-                          ...list,
-                          questions: [
-                              {
-                                  id: getId(),
-                                  q,
-                                  a,
-                              },
-                          ].concat(list.questions),
-                      }
-                    : list
-            )
-            setLists(newData)
-            save(newData, previousLists, fullSave)
-        },
-        [lists, save, previousLists, fullSave]
-    )
-    const editQuestion = useCallback(
-        (listId: string) => (question: FlashcardQuestion) => {
-            const { id: questionId, q, a } = question
-            const newData = lists.map((list) =>
-                listId === list.id
-                    ? {
-                          ...list,
-                          questions: list.questions.map((question) =>
-                              question.id === questionId
-                                  ? {
-                                        ...question,
-                                        a,
-                                        q,
-                                    }
-                                  : question
-                          ),
-                      }
-                    : list
-            )
-            setLists(newData)
-            save(newData, previousLists, fullSave)
-        },
-        [lists, save, previousLists, fullSave]
-    )
-    const delList = useCallback(
-        (listId: string) => {
-            const newData = lists.filter((list) => list.id !== listId)
-            setLists(newData)
-            save(newData, previousLists, fullSave)
-        },
-        [lists, save, previousLists, fullSave]
-    )
-
-    const setScore = useCallback(
-        (listId: string, questionId: string, score: number) => {
-            const newData = lists.map((list) => {
-                if (list.id === listId) {
-                    const newQuestions = list.questions.map((question) => {
-                        return question.id === questionId
-                            ? {
-                                  ...question,
-                                  count: question.count
-                                      ? question.count + 1
-                                      : 1,
-                                  score: question.score
-                                      ? question.score + score
-                                      : score,
-                              }
-                            : question
-                    })
-                    return { ...list, questions: newQuestions }
-                }
-                return list
-            })
-            setLists(newData)
-            save(newData, previousLists, fullSave)
-        },
-        [lists, save, previousLists, fullSave]
-    )
-
-    const delQuestion = useCallback(
-        (listId: string, questionId: string) => {
-            const newData = lists.map((list) => {
-                if (listId === list.id) {
-                    return {
-                        ...list,
-                        questions: list.questions.filter(
-                            (question) => question.id !== questionId
-                        ),
-                    }
-                }
-                return list
-            })
-            setLists(newData)
-            save(newData, previousLists, fullSave)
-        },
-        [lists, save, previousLists, fullSave]
-    )
-
-    const initLoad = useCallback(
-        async (key: string) => {
-            setKey(key)
-            localStorage.setItem('flashcard-key', key)
-            const json = await loadOnline(key)
-            setLists(json)
-            setPreviousLists(json)
-        },
-        [loadOnline]
-    )
-
     const contextValue = useMemo(
         () => ({
-            lists,
-            sortedLists,
+            lists: sortedLists,
             addList,
             editList,
             delList,
@@ -277,11 +214,9 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             delQuestion,
             setScore,
             key,
-            initLoad,
-            load,
+            setKey,
         }),
         [
-            lists,
             sortedLists,
             addList,
             editList,
@@ -291,8 +226,6 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             delQuestion,
             setScore,
             key,
-            initLoad,
-            load,
         ]
     )
 

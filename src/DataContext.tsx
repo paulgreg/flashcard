@@ -8,7 +8,6 @@ import {
 
 export type DataContextType = {
     lists: FlashcardLists
-    sortedLists: FlashcardLists
     addList: (name: string, questions?: FlashcardQuestions) => void
     editList: (id: string, name: string) => void
     delList: (listId: string) => void
@@ -19,8 +18,7 @@ export type DataContextType = {
     delQuestion: (listId: string, questionId: string) => void
     setScore: (listId: string, questionId: string, score: number) => void
     key: string | null
-    load: () => void
-    initLoad: (key: string) => void
+    setKey: (key: string) => void
 }
 
 export const useDataContext = () => useContext(DataContext)

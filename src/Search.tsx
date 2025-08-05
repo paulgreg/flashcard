@@ -5,7 +5,7 @@ import { cleanStr } from './utils/string'
 import { FlashcardList, FlashcardQuestion } from './Types'
 
 const Search = () => {
-    const { sortedLists, delQuestion } = useDataContext()
+    const { lists, delQuestion } = useDataContext()
     const [term, setTerm] = useState('')
 
     const onInputChange = useCallback(
@@ -25,7 +25,7 @@ const Search = () => {
 
     const results = useMemo(
         () =>
-            sortedLists
+            lists
                 .map((list) => ({
                     ...list,
                     questions:
@@ -41,7 +41,7 @@ const Search = () => {
                     ({ name, questions }) =>
                         cleanStr(name).includes(filterTerm) || questions.length
                 ),
-        [sortedLists, filterTerm]
+        [lists, filterTerm]
     )
 
     return (
@@ -57,7 +57,7 @@ const Search = () => {
                     required
                     onChange={onInputChange}
                 />
-                {sortedLists.length === 0 && <p>No list</p>}
+                {lists.length === 0 && <p>No list</p>}
                 {results.map((list) => (
                     <>
                         <div

@@ -17,14 +17,14 @@ const MemoizedList = memo(
             listId: string
         ) => (e: ChangeEvent<HTMLInputElement>) => void
     }) => {
-        const { sortedLists } = useDataContext()
+        const { lists } = useDataContext()
 
         return (
             <>
-                {sortedLists.length === 0 ? (
+                {lists.length === 0 ? (
                     <p>No list</p>
                 ) : (
-                    sortedLists.map((list) => (
+                    lists.map((list) => (
                         <div
                             className="row"
                             key={list.id}

@@ -1,3 +1,5 @@
+import * as Y from 'yjs'
+
 export type FlashcardPartialQuestion = {
     q: string
     a: string
@@ -23,3 +25,7 @@ export type FlashcardComponent = {
     list: FlashcardList
     question?: FlashcardQuestion
 }
+
+export type YFlashcardQuestion = string | number
+
+export type YFlashcardList = string | Y.Array<Y.Map<YFlashcardQuestion>>

@@ -5,7 +5,7 @@ import Settings from './settings.json'
 import { FlashcardList } from './Types'
 
 const Home = () => {
-    const { sortedLists, delList } = useDataContext()
+    const { lists, delList } = useDataContext()
 
     const onDelete = (list: FlashcardList) => () => {
         const { name, id } = list
@@ -15,8 +15,8 @@ const Home = () => {
     return (
         <>
             <div className="content">
-                {sortedLists.length === 0 && <p>No list</p>}
-                {sortedLists.map((list) => (
+                {lists.length === 0 && <p>No list</p>}
+                {lists.map((list) => (
                     <div
                         key={list.id}
                         className="row"
@@ -78,7 +78,7 @@ const Home = () => {
                         {' | '}
                     </>
                 )}
-                {sortedLists.length > 0 && (
+                {lists.length > 0 && (
                     <>
                         <Link to="/search">search</Link>
                         {' | '}
