@@ -1,0 +1,92 @@
+import React from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { useDataContext } from './DataContext'
+import { FlashcardList } from './Types'
+
+const ListHome = () => {
+    const { name } = useParams()
+    const { lists, delList } = useDataContext()
+
+    const onDelete = (list: FlashcardList) => () => {
+        const { name, id } = list
+        if (window.confirm(`Delete list ${name} ?`)) delList(id)
+    }
+
+    return (
+        <>
+            <div className="content">
+                {lists.length === 0 && <p>No list</p>}
+                {lists.map((list) => (
+                    <div
+                        key={list.id}
+                        className="row"
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: '1fr 10fr 1fr',
+                            gap: 10,
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                            }}
+                        >
+                            <span
+                                onClick={onDelete(list)}
+                                style={{
+                                    cursor: 'pointer',
+                                    padding: '4px',
+                                }}
+                            >
+                                🗑️
+                            </span>
+                            <Link
+                                to={`/${name}/${list.id}/edit`}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                ✏️
+                            </Link>
+                        </div>
+                        <span>
+                            <Link
+                                to={`/${name}/${list.id}`}
+                                style={{ margin: 4 }}
+                            >
+                                {list.name}
+                            </Link>
+                            <small style={{ fontSize: '.7em' }}>
+                                ({list.questions.length})
+                            </small>
+                        </span>
+                        {list.questions.length > 0 ? (
+                            <Link
+                                to={`/${name}/${list.id}/play`}
+                                style={{
+                                    margin: 'auto 8px auto 0',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                ▶
+                            </Link>
+                        ) : (
+                            <span></span>
+                        )}
+                    </div>
+                ))}
+            </div>
+            <footer>
+                {lists.length > 0 && (
+                    <>
+                        <Link to={`/${name}/search`}>search</Link>
+                        {' | '}
+                    </>
+                )}
+                <Link to={`/${name}/add`}>add a list</Link>
+                {' | '}
+                <Link to={`/${name}/fusion`}>fusion</Link>
+            </footer>
+        </>
+    )
+}
+
+export default ListHome

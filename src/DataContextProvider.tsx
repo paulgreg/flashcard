@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import {
     FlashcardLists,
     FlashcardPartialQuestion,
@@ -14,20 +14,18 @@ import * as Y from 'yjs'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import { WebsocketProvider } from 'y-websocket'
 import { useY } from 'react-yjs'
-
-const PREFIX = 'fc'
+import { PREFIX } from './utils/constants'
 
 interface DataContextProviderPropsType {
+    name: string
     children: React.ReactNode | React.ReactNode[]
 }
 
 const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
+    name,
     children,
 }) => {
-    const [key, setKey] = useState<string | null>(
-        localStorage.getItem('flashcard-key')
-    )
-    const guid = `${PREFIX}:${key}`
+    const guid = `${PREFIX}:${name}`
 
     const yDoc = useMemo(() => new Y.Doc({ guid }), [guid])
     const yLists = yDoc.getArray<Y.Map<YFlashcardList>>(`lists`)
@@ -37,8 +35,15 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
 
     useEffect(() => {
         persistence.current = new IndexeddbPersistence(guid, yDoc)
-        if (settings.saveOnline && settings.wsUrl) {
-            provider.current = new WebsocketProvider(settings.wsUrl, guid, yDoc)
+        if (settings.saveOnline && settings.crdtUrl) {
+            provider.current = new WebsocketProvider(
+                settings.crdtUrl,
+                guid,
+                yDoc,
+                {
+                    params: { secret: settings.secret },
+                }
+            )
             return () => provider.current?.disconnect()
         }
     }, [guid, yDoc])
@@ -213,8 +218,6 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             editQuestion,
             delQuestion,
             setScore,
-            key,
-            setKey,
         }),
         [
             sortedLists,
@@ -225,7 +228,6 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
             editQuestion,
             delQuestion,
             setScore,
-            key,
         ]
     )
 

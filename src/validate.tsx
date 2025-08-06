@@ -9,12 +9,20 @@ type ValidateType = {
 }
 
 const validate =
-    (lists: FlashcardLists, listIdStr?: string, questionIdStr?: string) =>
+    (
+        name?: string,
+        lists?: FlashcardLists,
+        listIdStr?: string,
+        questionIdStr?: string
+    ) =>
     (Component: React.FC<FlashcardComponent>) => {
+        if (!name || !RegExp(/\w+/).exec(name))
+            return <ErrorMessage msg="bad nameparameter" />
+
         if (!listIdStr || !RegExp(/\w+/).exec(listIdStr))
             return <ErrorMessage msg="bad list parameter" />
 
-        const list = lists.find((list) => String(list.id) === listIdStr)
+        const list = lists?.find((list) => String(list.id) === listIdStr)
         if (!list) return <ErrorMessage msg="list not found" />
 
         let question
@@ -32,8 +40,8 @@ const validate =
 
 const Validate: React.FC<ValidateType> = ({ component }) => {
     const { lists } = useDataContext()
-    const { listId, questionId } = useParams()
-    return validate(lists, listId, questionId)(component)
+    const { name, listId, questionId } = useParams()
+    return validate(name, lists, listId, questionId)(component)
 }
 
 export default Validate

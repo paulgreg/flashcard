@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, MouseEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { sortQuestionsByScore } from './utils'
 import { useDataContext } from './DataContext'
 import { FlashcardComponent, FlashcardList } from './Types'
@@ -36,6 +36,7 @@ const OK = 1
 const KO = 0
 
 const Play: React.FC<FlashcardComponent> = ({ list }) => {
+    const { name } = useParams()
     const [step, setStep] = useState(0)
     const { first, next } = usePickQuestion(list)
     const [question, setQuestion] = useState(first)
@@ -94,7 +95,7 @@ const Play: React.FC<FlashcardComponent> = ({ list }) => {
                     <p>no question</p>
                 </div>
                 <footer>
-                    <Link to={`/list/${list.id}`}>back</Link>
+                    <Link to={`/${name}/${list.id}`}>back</Link>
                 </footer>
             </>
         )
@@ -143,7 +144,7 @@ const Play: React.FC<FlashcardComponent> = ({ list }) => {
                 </div>
             </div>
             <footer>
-                <Link to={`/list/${list.id}`}>back</Link>
+                <Link to={`/${name}/${list.id}`}>back</Link>
             </footer>
         </>
     )

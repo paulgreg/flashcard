@@ -5,7 +5,7 @@ import React, {
     useCallback,
     useState,
 } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { getId } from './utils'
 
@@ -61,6 +61,7 @@ const MemoizedList = memo(
 )
 
 const Fusion = () => {
+    const { name } = useParams()
     const { lists, addList } = useDataContext()
     const [selection, setSelection] = useState<Array<string>>([])
     const [listName, setListName] = useState('')
@@ -99,9 +100,9 @@ const Fusion = () => {
                     id: getId(),
                 }))
             addList(listName, questions)
-            navigate('/')
+            navigate(`/${name}`)
         },
-        [lists, addList, listName, navigate, selection]
+        [lists, addList, listName, navigate, name, selection]
     )
     return (
         <>
@@ -129,9 +130,9 @@ const Fusion = () => {
                 </form>
             </div>
             <footer>
-                <Link to="/">home</Link>
+                <Link to={`/${name}`}>home</Link>
                 {' | '}
-                <Link to="/search">search</Link>
+                <Link to={`/${name}/search`}>search</Link>
             </footer>
         </>
     )

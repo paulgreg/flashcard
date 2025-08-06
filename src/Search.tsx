@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { cleanStr } from './utils/string'
 import { FlashcardList, FlashcardQuestion } from './Types'
 
 const Search = () => {
+    const { name } = useParams()
     const { lists, delQuestion } = useDataContext()
     const [term, setTerm] = useState('')
 
@@ -21,7 +22,7 @@ const Search = () => {
                 delQuestion(list.id, question.id)
         }
 
-    const filterTerm = term?.length > 3 ? cleanStr(term) : ''
+    const filterTerm = term?.length >= 3 ? cleanStr(term) : ''
 
     const results = useMemo(
         () =>
@@ -114,7 +115,7 @@ const Search = () => {
                 ))}
             </div>
             <footer>
-                <Link to="/">home</Link>
+                <Link to={`/${name}`}>home</Link>
             </footer>
         </>
     )

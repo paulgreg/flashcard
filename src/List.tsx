@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { sortQuestionsByScore, limitNumber } from './utils'
 import { FlashcardComponent, FlashcardList, FlashcardQuestion } from './Types'
@@ -31,6 +31,7 @@ const QuestionScore: React.FC<{ question: FlashcardQuestion }> = ({
 }
 
 const List: React.FC<FlashcardComponent> = ({ list }) => {
+    const { name } = useParams()
     const { delQuestion } = useDataContext()
 
     const onQuestionDelete =
@@ -70,7 +71,7 @@ const List: React.FC<FlashcardComponent> = ({ list }) => {
                                     🗑️
                                 </span>
                                 <Link
-                                    to={`/list/${list.id}/edit/${question.id}`}
+                                    to={`/${list.id}/edit/${question.id}`}
                                     style={{ textDecoration: 'none' }}
                                 >
                                     ✏️
@@ -84,14 +85,14 @@ const List: React.FC<FlashcardComponent> = ({ list }) => {
                     ))}
             </div>
             <footer>
-                <Link to={`/list/${list.id}/add`}>add question</Link>
+                <Link to={`/${name}/search`}>search</Link>
                 {' | '}
-                <Link to="/search">search</Link>
+                <Link to={`/${name}/${list.id}/add`}>add question</Link>
                 {list.questions.length > 0 && (
                     <>
                         {' | '}
                         <Link
-                            to={`/list/${list.id}/play`}
+                            to={`/${name}/${list.id}/play`}
                             style={{
                                 textDecoration: 'none',
                             }}

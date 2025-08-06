@@ -1,24 +1,90 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { useDataContext } from './DataContext'
-import Settings from './settings.json'
-import { FlashcardList } from './Types'
+import React, {
+    useCallback,
+    FormEvent,
+    useRef,
+    MouseEvent,
+    useState,
+    useEffect,
+} from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import settings from './settings.json'
+import { PREFIX } from './utils/constants'
+
+const requestRawListNames = async () => {
+    const url = `${settings.crdtUrl}list?prefix=${PREFIX}&secret=${settings.secret}`
+    const response = await fetch(url)
+    if (response.ok) return await response.json()
+    return []
+}
+
+const deleteList = async (docName: string) => {
+    const url = `${settings.crdtUrl}del?doc=${docName}&secret=${settings.secret}`
+    const response = await fetch(url)
+    if (response.ok) return await response.json()
+    return false
+}
+
+const formatRawListName = (rawDocName = '') =>
+    decodeURIComponent(rawDocName.split(`${PREFIX}:`)[1])
 
 const Home = () => {
-    const { lists, delList } = useDataContext()
+    const [rawListNames, setRawListNames] = useState([])
+    const inputRef = useRef<HTMLInputElement>(null)
 
-    const onDelete = (list: FlashcardList) => () => {
-        const { name, id } = list
-        if (window.confirm(`Delete list ${name} ?`)) delList(id)
+    const navigate = useNavigate()
+
+    const fillListNames = async () => {
+        if (settings.saveOnline) {
+            setRawListNames(await requestRawListNames())
+        }
     }
+
+    useEffect(() => {
+        fillListNames()
+    }, [])
+
+    const onSubmitListNameForm = useCallback(
+        (e: FormEvent) => {
+            e.preventDefault()
+            const name = inputRef.current?.value ?? ''
+            if (name) {
+                navigate(`/${name}`)
+            }
+        },
+        [navigate]
+    )
+    const onDeleteList = useCallback(
+        (rawName: string) => (e: MouseEvent) => {
+            e.preventDefault()
+            if (confirm(`delete ${formatRawListName(rawName)} ?`)) {
+                deleteList(rawName)
+                fillListNames()
+            }
+        },
+        []
+    )
 
     return (
         <>
             <div className="content">
-                {lists.length === 0 && <p>No list</p>}
-                {lists.map((list) => (
+                <form className="homeForm" onSubmit={onSubmitListNameForm}>
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        name="name"
+                        className=""
+                        placeholder="English"
+                        required
+                        autoFocus
+                        pattern="^[^\s\t]+$"
+                        minLength={2}
+                        maxLength={20}
+                    ></input>
+                    <button>go</button>
+                </form>
+                {rawListNames?.map((name) => (
                     <div
-                        key={list.id}
+                        key={name}
                         className="row"
                         style={{
                             display: 'grid',
@@ -32,7 +98,7 @@ const Home = () => {
                             }}
                         >
                             <span
-                                onClick={onDelete(list)}
+                                onClick={onDeleteList(name)}
                                 style={{
                                     cursor: 'pointer',
                                     padding: '4px',
@@ -40,54 +106,20 @@ const Home = () => {
                             >
                                 🗑️
                             </span>
-                            <Link
-                                to={`/list/${list.id}/edit`}
-                                style={{ textDecoration: 'none' }}
-                            >
-                                ✏️
-                            </Link>
                         </div>
                         <span>
-                            <Link to={`/list/${list.id}`} style={{ margin: 4 }}>
-                                {list.name}
-                            </Link>
-                            <small style={{ fontSize: '.7em' }}>
-                                ({list.questions.length})
-                            </small>
-                        </span>
-                        {list.questions.length > 0 ? (
                             <Link
-                                to={`/list/${list.id}/play`}
-                                style={{
-                                    margin: 'auto 8px auto 0',
-                                    textDecoration: 'none',
-                                }}
+                                to={`/${formatRawListName(name)}`}
+                                className={'listLink'}
                             >
-                                ▶
+                                {formatRawListName(name)}
                             </Link>
-                        ) : (
-                            <span></span>
-                        )}
+                        </span>
+                        <span></span>
                     </div>
                 ))}
             </div>
-            <footer>
-                {Settings.saveOnline && (
-                    <>
-                        <Link to="/configure">configure</Link>
-                        {' | '}
-                    </>
-                )}
-                {lists.length > 0 && (
-                    <>
-                        <Link to="/search">search</Link>
-                        {' | '}
-                    </>
-                )}
-                <Link to="/list/add">add a list</Link>
-                {' | '}
-                <Link to="/fusion">fusion</Link>
-            </footer>
+            <footer></footer>
         </>
     )
 }

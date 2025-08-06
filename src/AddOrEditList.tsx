@@ -1,9 +1,10 @@
 import React, { useEffect, useCallback, useRef, FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { FlashcardList } from './Types'
 
 const AddOrEditList: React.FC<{ list?: FlashcardList }> = ({ list }) => {
+    const { name } = useParams()
     const { addList, editList } = useDataContext()
     const navigate = useNavigate()
     const inputRef = useRef<HTMLInputElement>(null)
@@ -16,10 +17,10 @@ const AddOrEditList: React.FC<{ list?: FlashcardList }> = ({ list }) => {
             if (value.length > 0) {
                 if (list?.id) editList(list.id, value)
                 else addList(value)
-                navigate('/')
+                navigate(`/${name}`)
             }
         },
-        [addList, editList, list?.id, navigate]
+        [addList, editList, list?.id, name, navigate]
     )
 
     useEffect(() => {
@@ -43,7 +44,7 @@ const AddOrEditList: React.FC<{ list?: FlashcardList }> = ({ list }) => {
                 </form>
             </div>
             <footer>
-                <Link to="/">cancel</Link>
+                <Link to={`/${name}`}>cancel</Link>
             </footer>
         </>
     )

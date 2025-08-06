@@ -5,7 +5,7 @@ import React, {
     FormEvent,
     KeyboardEvent,
 } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { FlashcardComponent } from './Types'
 
@@ -13,6 +13,7 @@ const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
     list,
     question,
 }) => {
+    const { name } = useParams()
     const { addQuestion, editQuestion } = useDataContext()
     const inputQuestionRef = useRef<HTMLInputElement>(null)
     const inputAnswerRef = useRef<HTMLInputElement>(null)
@@ -32,7 +33,7 @@ const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
                         q: questionValue,
                         a: answerValue,
                     })
-                    navigate(`/list/${list.id}`)
+                    navigate(`/${list.id}`)
                 } else {
                     addQuestion(list.id)({
                         q: questionValue,
@@ -95,7 +96,7 @@ const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
                 ))}
             </div>
             <footer>
-                <Link to={`/list/${list.id}`}>back</Link>
+                <Link to={`/${name}/${list.id}`}>back</Link>
             </footer>
         </>
     )

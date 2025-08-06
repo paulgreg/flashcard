@@ -23,7 +23,6 @@ input[type='text'] {
     margin-top: 20px;
 }
 button {
-    display: block;
     text-transform: uppercase;
 }
 button[disabled] {
@@ -81,9 +80,14 @@ a {
     color: #fc997c;
 }
 
+.homeForm {
+    margin: 1em auto;
+}
+
 .rowPassive,
 .row {
     min-height: 50px;
+    align-items: center;
 }
 .row:active,
 .row:hover {
