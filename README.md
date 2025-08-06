@@ -1,17 +1,14 @@
 # Flashcard
 
-A simple flashcard PWA.
+A [CRDT](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type) flashcard web app using [YJS](https://docs.yjs.dev/).
 
-You can try the app here : https://paulgreg.me/flashcard/ (but I strongly suggest you to host it yourself).
+You can try the app here : https://paulgreg.me/flashcard/ but with local storage only.
 
-## Settings
+It is designed to be used with [paulgreg/y-websocket-service](https://github.com/paulgreg/y-websocket-service) for client synchronisation.
 
-Before first run, copy `src/settings.json.dist` to `src/settings.json`.
+## Configuration
 
-By default, data is stored in localStorage.
-
-You can save data on a server via [json-store](https://github.com/paulgreg/json-store) project. To do so, install it on your server then update `src/settings.json` : set `saveOnline` to true, update `saveUrl` and `authorization` according json-store configuration.
-
+Before first run, copy `src/settings.json.dist` to `src/settings.json` and change settings to use CRDT server.
 
 ## Color palette
 
