@@ -15,6 +15,7 @@ import { IndexeddbPersistence } from 'y-indexeddb'
 import { WebsocketProvider } from 'y-websocket'
 import { useY } from 'react-yjs'
 import { PREFIX } from './utils/constants'
+import { slugify } from './utils/string'
 
 interface DataContextProviderPropsType {
     name: string
@@ -25,7 +26,7 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
     name,
     children,
 }) => {
-    const guid = `${PREFIX}:${name}`
+    const guid = `${PREFIX}:${slugify(name)}`
 
     const yDoc = useMemo(() => new Y.Doc({ guid }), [guid])
     const yLists = yDoc.getArray<Y.Map<YFlashcardList>>(`lists`)

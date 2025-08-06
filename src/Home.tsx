@@ -76,7 +76,6 @@ const Home = () => {
                         placeholder="English"
                         required
                         autoFocus
-                        pattern="^[^\s\t]+$"
                         minLength={2}
                         maxLength={20}
                     ></input>

@@ -6,3 +6,6 @@ export const replaceSpecialCharBySpace = (str: string) =>
 
 export const cleanStr = (str: string) =>
     replaceSpecialCharBySpace(removeAccent(str.toLocaleLowerCase()))
+
+export const slugify = (s: string) =>
+    replaceSpecialCharBySpace(s).trim().replace(/\s+/g, '-') // Replace spaces with dashes
