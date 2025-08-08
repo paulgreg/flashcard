@@ -9,6 +9,7 @@ import React, {
 import { Link, useNavigate } from 'react-router-dom'
 import settings from './settings.json'
 import { PREFIX } from './utils/constants'
+import { formatRawListName } from './utils/string'
 
 const requestRawListNames = async () => {
     const url = `${settings.crdtUrl}list?prefix=${PREFIX}&secret=${settings.secret}`
@@ -24,8 +25,45 @@ const deleteList = async (docName: string) => {
     return false
 }
 
-const formatRawListName = (rawDocName = '') =>
-    decodeURIComponent(rawDocName.split(`${PREFIX}:`)[1])
+type HomeItemProps = {
+    name: string
+    onDeleteList: (rawName: string) => (e: MouseEvent) => void
+}
+const HomeItem: React.FC<HomeItemProps> = ({ name, onDeleteList }) => {
+    const formatedName = formatRawListName(name)
+    return (
+        <div
+            className="row"
+            style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 10fr 1fr',
+                gap: 10,
+            }}
+        >
+            <div
+                style={{
+                    display: 'flex',
+                }}
+            >
+                <span
+                    onClick={onDeleteList(name)}
+                    style={{
+                        cursor: 'pointer',
+                        padding: '4px',
+                    }}
+                >
+                    🗑️
+                </span>
+            </div>
+            <span>
+                <Link to={`/${formatedName}`} className={'listLink'}>
+                    {formatedName}
+                </Link>
+            </span>
+            <span></span>
+        </div>
+    )
+}
 
 const Home = () => {
     const [rawListNames, setRawListNames] = useState([])
@@ -82,40 +120,11 @@ const Home = () => {
                     <button>go</button>
                 </form>
                 {rawListNames?.map((name) => (
-                    <div
+                    <HomeItem
                         key={name}
-                        className="row"
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 10fr 1fr',
-                            gap: 10,
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: 'flex',
-                            }}
-                        >
-                            <span
-                                onClick={onDeleteList(name)}
-                                style={{
-                                    cursor: 'pointer',
-                                    padding: '4px',
-                                }}
-                            >
-                                🗑️
-                            </span>
-                        </div>
-                        <span>
-                            <Link
-                                to={`/${formatRawListName(name)}`}
-                                className={'listLink'}
-                            >
-                                {formatRawListName(name)}
-                            </Link>
-                        </span>
-                        <span></span>
-                    </div>
+                        name={name}
+                        onDeleteList={onDeleteList}
+                    />
                 ))}
             </div>
             <footer></footer>
