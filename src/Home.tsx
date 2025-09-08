@@ -19,7 +19,7 @@ const requestRawListNames = async (): Promise<string[]> => {
 }
 
 const deleteList = async (docName: string) => {
-    const url = `${settings.crdtUrl}del?doc=${docName}&secret=${settings.secret}`
+    const url = `${settings.crdtUrl}del?doc=${encodeURIComponent(docName)}&secret=${settings.secret}`
     const response = await fetch(url)
     if (response.ok) return await response.json()
     return false
