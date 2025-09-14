@@ -71,7 +71,7 @@ const List: React.FC<FlashcardComponent> = ({ list }) => {
                                     🗑️
                                 </span>
                                 <Link
-                                    to={`/${list.id}/edit/${question.id}`}
+                                    to={`/${name}/${list.id}/edit/${question.id}`}
                                     style={{ textDecoration: 'none' }}
                                 >
                                     ✏️

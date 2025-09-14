@@ -33,7 +33,7 @@ const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
                         q: questionValue,
                         a: answerValue,
                     })
-                    navigate(`/${list.id}`)
+                    navigate(`/${name}/${list.id}`)
                 } else {
                     addQuestion(list.id)({
                         q: questionValue,
