@@ -8,7 +8,14 @@ export default defineConfig(() => {
             sourcemap: true,
         },
         base: './',
-        plugins: [react(), svgrPlugin()],
+        plugins: [
+            react({
+                babel: {
+                    plugins: ['babel-plugin-react-compiler'],
+                },
+            }),
+            svgrPlugin()
+        ],
         test: {
             include: ['**/*.test.js'],
             globals: true,
