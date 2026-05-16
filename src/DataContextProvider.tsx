@@ -12,7 +12,7 @@ import { getId } from './utils'
 import { DataContext } from './DataContext'
 import * as Y from 'yjs'
 import { IndexeddbPersistence } from 'y-indexeddb'
-import { WebsocketProvider } from 'y-websocket'
+import { HocuspocusProvider } from '@hocuspocus/provider'
 import { useY } from 'react-yjs'
 import { PREFIX } from './utils/constants'
 import { slugify } from './utils/string'
@@ -32,19 +32,17 @@ const DataContextProvider: React.FC<DataContextProviderPropsType> = ({
     const yLists = yDoc.getArray<Y.Map<YFlashcardList>>(`lists`)
 
     const persistence = useRef<IndexeddbPersistence>(null)
-    const provider = useRef<WebsocketProvider>(null)
+    const provider = useRef<HocuspocusProvider>(null)
 
     useEffect(() => {
         persistence.current = new IndexeddbPersistence(guid, yDoc)
         if (settings.saveOnline && settings.crdtUrl) {
-            provider.current = new WebsocketProvider(
-                settings.crdtUrl,
-                guid,
-                yDoc,
-                {
-                    params: { secret: settings.secret },
-                }
-            )
+            provider.current = new HocuspocusProvider({
+                url: `${settings.crdtUrl}ws`,
+                name: guid,
+                document: yDoc,
+                token: settings.secret,
+            })
             return () => provider.current?.disconnect()
         }
     }, [guid, yDoc])

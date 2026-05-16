@@ -12,14 +12,14 @@ import { PREFIX } from './utils/constants'
 import { formatRawListName } from './utils/string'
 
 const requestRawListNames = async (): Promise<string[]> => {
-    const url = `${settings.crdtUrl}list?prefix=${PREFIX}&secret=${settings.secret}`
+    const url = `${settings.crdtUrl}api/list?prefix=${PREFIX}&secret=${settings.secret}`
     const response = await fetch(url)
     if (response.ok) return await response.json()
     return []
 }
 
 const deleteList = async (docName: string) => {
-    const url = `${settings.crdtUrl}del?doc=${encodeURIComponent(docName)}&secret=${settings.secret}`
+    const url = `${settings.crdtUrl}api/del?doc=${encodeURIComponent(docName)}&secret=${settings.secret}`
     const response = await fetch(url)
     if (response.ok) return await response.json()
     return false
