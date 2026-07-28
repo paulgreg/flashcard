@@ -4,14 +4,14 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@hocuspocus/provider": "^4.0.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-router-dom": "^7.15.1",
+    "@hocuspocus/provider": "^4.4.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.1",
     "react-yjs": "^2.0.1",
-    "uuid": "^14.0.0",
+    "uuid": "^14.0.1",
     "y-indexeddb": "^9.0.12",
-    "yjs": "^13.6.30"
+    "yjs": "^13.6.31"
   },
   "scripts": {
     "dev": "vite",
@@ -40,19 +40,19 @@
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "^0.2.3",
-    "@types/node": "^25.8.0",
-    "@types/react": "^19.2.14",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.2",
+    "@vitejs/plugin-react": "^6.0.4",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint": "^10.4.0",
+    "eslint": "^10.8.0",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "prettier": "^3.8.3",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "prettier": "^3.9.6",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.3",
-    "vite": "^8.0.13",
+    "typescript-eslint": "^8.65.0",
+    "vite": "^8.1.5",
     "vite-plugin-svgr": "^5.2.0",
-    "vitest": "^4.1.6"
+    "vitest": "^4.1.10"
   }
 }
