@@ -7,7 +7,8 @@ import { FlashcardComponent, FlashcardList, FlashcardQuestion } from './Types'
 const QuestionScore: React.FC<{ question: FlashcardQuestion }> = ({
     question,
 }) => {
-    if (!question.count || !question.score) return null
+    if (question.count === undefined || question.score === undefined)
+        return null
 
     const styleNb = {
         fontSize: '.75em',
