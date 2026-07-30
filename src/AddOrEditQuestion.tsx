@@ -8,6 +8,8 @@ import React, {
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { FlashcardComponent } from './Types'
+import s from './AddOrEditQuestion.module.css'
+import c from './common.module.css'
 
 const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
     list,
@@ -74,7 +76,7 @@ const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
                         placeholder="a question"
                         minLength={1}
                         autoFocus
-                        style={{ width: '90%' }}
+                        className={c.fullWidthInput}
                         onKeyDown={onKeyDown}
                     />
                     <input
@@ -83,9 +85,9 @@ const AddOrEditQuestion: React.FC<FlashcardComponent> = ({
                         name="answer"
                         placeholder="the answer"
                         minLength={1}
-                        style={{ width: '90%' }}
+                        className={c.fullWidthInput}
                     />
-                    <input type="submit" value="ok" style={{ width: '60px' }} />
+                    <input type="submit" value="ok" className={s.submitInput} />
                 </form>
 
                 {list.questions.length === 0 && <p>No question</p>}

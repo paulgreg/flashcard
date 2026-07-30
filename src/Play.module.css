@@ -1,0 +1,22 @@
+.questionArea {
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font-size: 30px;
+}
+
+.answer {
+    color: #fc997c;
+}
+
+.scoreActions {
+    display: flex;
+    justify-content: space-evenly;
+    height: 100px;
+    width: 100%;
+}
+
+.scoreButton {
+    cursor: pointer;
+    padding: 1em;
+}

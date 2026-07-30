@@ -2,6 +2,8 @@ import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { FlashcardList } from './Types'
+import s from './ListHome.module.css'
+import c from './common.module.css'
 
 const ListHome = () => {
     const { name } = useParams()
@@ -19,30 +21,18 @@ const ListHome = () => {
                 {lists.map((list) => (
                     <div
                         key={list.id}
-                        className="row"
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 10fr 1fr',
-                            gap: 10,
-                        }}
+                        className={`row ${c.row}`}
                     >
-                        <div
-                            style={{
-                                display: 'flex',
-                            }}
-                        >
+                        <div className={c.flex}>
                             <span
                                 onClick={onDelete(list)}
-                                style={{
-                                    cursor: 'pointer',
-                                    padding: '4px',
-                                }}
+                                className={s.deleteIcon}
                             >
                                 🗑️
                             </span>
                             <Link
                                 to={`/${name}/${list.id}/edit`}
-                                style={{ textDecoration: 'none' }}
+                                className={s.noDecoration}
                             >
                                 ✏️
                             </Link>
@@ -50,22 +40,16 @@ const ListHome = () => {
                         <span>
                             <Link
                                 to={`/${name}/${list.id}`}
-                                style={{ margin: 4 }}
+                                className={s.listLink}
                             >
                                 {list.name}
                             </Link>
-                            <small style={{ fontSize: '.7em' }}>
+                            <small className={s.listCount}>
                                 ({list.questions.length})
                             </small>
                         </span>
                         {list.questions.length > 0 ? (
-                            <Link
-                                to={`/${name}/${list.id}/play`}
-                                style={{
-                                    margin: 'auto 8px auto 0',
-                                    textDecoration: 'none',
-                                }}
-                            >
+                            <Link to={`/${name}/${list.id}/play`} className={s.playLink}>
                                 ▶
                             </Link>
                         ) : (

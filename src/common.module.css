@@ -1,0 +1,13 @@
+.row {
+    display: grid;
+    grid-template-columns: 1fr 10fr 1fr;
+    gap: 10px;
+}
+
+.flex {
+    display: flex;
+}
+
+.fullWidthInput {
+    width: 90%;
+}

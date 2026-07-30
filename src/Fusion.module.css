@@ -1,0 +1,15 @@
+.listName {
+    margin: 4px;
+}
+
+.listCount {
+    font-size: 0.7em;
+}
+
+.listInput {
+    margin: 1em;
+}
+
+.createButton {
+    margin: auto;
+}

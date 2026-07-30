@@ -8,6 +8,8 @@ import React, {
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { getId } from './utils'
+import s from './Fusion.module.css'
+import c from './common.module.css'
 
 const MemoizedList = memo(
     ({
@@ -26,22 +28,13 @@ const MemoizedList = memo(
                 ) : (
                     lists.map((list) => (
                         <div
-                            className="row"
                             key={list.id}
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 10fr 1fr',
-                                gap: 10,
-                            }}
+                            className={`row ${c.row}`}
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                }}
-                            ></div>
+                            <div className={c.flex}></div>
                             <label htmlFor={list.id}>
-                                <span style={{ margin: 4 }}>{list.name}</span>
-                                <small style={{ fontSize: '.7em' }}>
+                                <span className={s.listName}>{list.name}</span>
+                                <small className={s.listCount}>
                                     ({list.questions.length})
                                 </small>
                             </label>
@@ -113,14 +106,14 @@ const Fusion = () => {
                     <input
                         type="text"
                         placeholder="new list name"
-                        style={{ margin: '1em' }}
+                        className={s.listInput}
                         value={listName}
                         minLength={1}
                         required
                         onChange={onInputChange}
                     />
                     <button
-                        style={{ margin: 'auto' }}
+                        className={s.createButton}
                         disabled={
                             listName.length === 0 || selection.length === 0
                         }

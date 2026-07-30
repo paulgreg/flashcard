@@ -1,0 +1,21 @@
+.deleteIcon {
+    cursor: pointer;
+    padding: 4px;
+}
+
+.noDecoration {
+    text-decoration: none;
+}
+
+.listLink {
+    margin: 4px;
+}
+
+.listCount {
+    font-size: 0.7em;
+}
+
+.playLink {
+    margin: auto 8px auto 0;
+    text-decoration: none;
+}

@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { sortQuestionsByScore, limitNumber } from './utils'
 import { FlashcardComponent, FlashcardList, FlashcardQuestion } from './Types'
+import s from './List.module.css'
+import c from './common.module.css'
 
 const QuestionScore: React.FC<{ question: FlashcardQuestion }> = ({
     question,
@@ -10,20 +12,15 @@ const QuestionScore: React.FC<{ question: FlashcardQuestion }> = ({
     if (question.count === undefined || question.score === undefined)
         return null
 
-    const styleNb = {
-        fontSize: '.75em',
-    }
     return (
-        <div
-            style={{ display: 'flex', justifyContent: 'end', fontSize: '.8em' }}
-        >
+        <div className={s.scoreBar}>
             <span>
                 👍
-                <span style={styleNb}>{limitNumber(question.score)}</span>
+                <span className={s.scoreNumber}>{limitNumber(question.score)}</span>
             </span>
-            <span style={{ paddingLeft: '.2em' }}>
+            <span className={s.scorePadding}>
                 👎
-                <span style={styleNb}>
+                <span className={s.scoreNumber}>
                     {limitNumber(question.count - question.score)}
                 </span>
             </span>
@@ -53,27 +50,18 @@ const List: React.FC<FlashcardComponent> = ({ list }) => {
                     .map((question) => (
                         <div
                             key={question.id}
-                            className="row"
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 10fr 1fr',
-                                gap: 10,
-                            }}
+                            className={`row ${c.row}`}
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                }}
-                            >
+                            <div className={c.flex}>
                                 <span
                                     onClick={onQuestionDelete(list, question)}
-                                    style={{ cursor: 'pointer' }}
+                                    className={s.deleteIcon}
                                 >
                                     🗑️
                                 </span>
                                 <Link
                                     to={`/${name}/${list.id}/edit/${question.id}`}
-                                    style={{ textDecoration: 'none' }}
+                                    className={s.noDecoration}
                                 >
                                     ✏️
                                 </Link>
@@ -94,9 +82,7 @@ const List: React.FC<FlashcardComponent> = ({ list }) => {
                         {' | '}
                         <Link
                             to={`/${name}/${list.id}/play`}
-                            style={{
-                                textDecoration: 'none',
-                            }}
+                            className={s.noDecoration}
                         >
                             ▶
                         </Link>

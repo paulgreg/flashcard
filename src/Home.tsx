@@ -10,6 +10,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import settings from './settings.json'
 import { PREFIX } from './utils/constants'
 import { formatRawListName } from './utils/string'
+import s from './Home.module.css'
+import c from './common.module.css'
 
 const requestRawListNames = async (): Promise<string[]> => {
     const url = `${settings.crdtUrl}api/list?prefix=${PREFIX}&secret=${settings.secret}`
@@ -32,26 +34,9 @@ type HomeItemProps = {
 const HomeItem: React.FC<HomeItemProps> = ({ name, onDeleteList }) => {
     const formatedName = formatRawListName(name)
     return (
-        <div
-            className="row"
-            style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 10fr 1fr',
-                gap: 10,
-            }}
-        >
-            <div
-                style={{
-                    display: 'flex',
-                }}
-            >
-                <span
-                    onClick={onDeleteList(name)}
-                    style={{
-                        cursor: 'pointer',
-                        padding: '4px',
-                    }}
-                >
+        <div className={`row ${c.row}`}>
+            <div className={c.flex}>
+                <span onClick={onDeleteList(name)} className={s.deleteIcon}>
                     🗑️
                 </span>
             </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useRef, FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { FlashcardList } from './Types'
+import c from './common.module.css'
 
 const AddOrEditList: React.FC<{ list?: FlashcardList }> = ({ list }) => {
     const { name } = useParams()
@@ -39,7 +40,7 @@ const AddOrEditList: React.FC<{ list?: FlashcardList }> = ({ list }) => {
                         placeholder="list name"
                         minLength={1}
                         autoFocus
-                        style={{ width: '90%' }}
+                        className={c.fullWidthInput}
                     />
                 </form>
             </div>

@@ -3,11 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { sortQuestionsByScore } from './utils'
 import { useDataContext } from './DataContext'
 import { FlashcardComponent, FlashcardList } from './Types'
-
-const styleScore = {
-    cursor: 'pointer',
-    padding: '1em',
-}
+import s from './Play.module.css'
 
 const usePickQuestion = (list: FlashcardList) => {
     const [idx, setIdx] = useState(0)
@@ -104,38 +100,22 @@ const Play: React.FC<FlashcardComponent> = ({ list }) => {
         <>
             <div className="content" onClick={onClick}>
                 <div
-                    style={{
-                        height: '100%',
-                        display: 'grid',
-                        placeItems: 'center',
-                        fontSize: '30px',
-                    }}
+                    className={s.questionArea}
                 >
                     {even ? (
                         question.q
                     ) : (
-                        <strong
-                            style={{
-                                color: '#fc997c',
-                            }}
-                        >
+                        <strong className={s.answer}>
                             {question.a}
                         </strong>
                     )}
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-evenly',
-                            height: '100px',
-                            width: '100%',
-                        }}
-                    >
+                    <div className={s.scoreActions}>
                         {odd && (
                             <>
-                                <span style={styleScore} data-score={KO}>
+                                <span className={s.scoreButton} data-score={KO}>
                                     👎
                                 </span>
-                                <span style={styleScore} data-score={OK}>
+                                <span className={s.scoreButton} data-score={OK}>
                                     👍
                                 </span>
                             </>

@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { useDataContext } from './DataContext'
 import { cleanStr } from './utils/string'
 import { FlashcardList, FlashcardQuestion } from './Types'
+import s from './Search.module.css'
+import c from './common.module.css'
 
 const Search = () => {
     const { name } = useParams()
@@ -51,7 +53,7 @@ const Search = () => {
                 <input
                     type="text"
                     placeholder="word"
-                    style={{ margin: '1em' }}
+                    className={s.searchInput}
                     value={term}
                     minLength={1}
                     autoFocus
@@ -63,48 +65,30 @@ const Search = () => {
                     <>
                         <div
                             key={list.id}
-                            className="rowPassive"
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 10fr 1fr',
-                                gap: 10,
-                            }}
+                            className={`rowPassive ${c.row}`}
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                }}
-                            ></div>
-                            <h3 style={{ margin: 4 }}>{list.name}</h3>
+                            <div className={c.flex}></div>
+                            <h3 className={s.title}>{list.name}</h3>
                             <span></span>
                         </div>
                         {list.questions.map((question) => (
                             <div
                                 key={question.id}
-                                className="row"
-                                style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '1fr 10fr 1fr',
-                                    gap: 10,
-                                }}
+                                className={`row ${c.row}`}
                             >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                    }}
-                                >
+                                <div className={c.flex}>
                                     <span
                                         onClick={onQuestionDelete(
                                             list,
                                             question
                                         )}
-                                        style={{ cursor: 'pointer' }}
+                                        className={s.deleteIcon}
                                     >
                                         🗑️
                                     </span>
                                 </div>
                                 <span>
-                                    <span style={{ margin: 4 }}>
+                                    <span className={s.questionText}>
                                         {question.q} → {question.a}
                                     </span>
                                 </span>

@@ -1,0 +1,21 @@
+.scoreBar {
+    display: flex;
+    justify-content: end;
+    font-size: 0.8em;
+}
+
+.scoreNumber {
+    font-size: 0.75em;
+}
+
+.scorePadding {
+    padding-left: 0.2em;
+}
+
+.deleteIcon {
+    cursor: pointer;
+}
+
+.noDecoration {
+    text-decoration: none;
+}

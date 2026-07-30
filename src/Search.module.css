@@ -1,0 +1,15 @@
+.searchInput {
+    margin: 1em;
+}
+
+.title {
+    margin: 4px;
+}
+
+.deleteIcon {
+    cursor: pointer;
+}
+
+.questionText {
+    margin: 4px;
+}
