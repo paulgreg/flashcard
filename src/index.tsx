@@ -18,11 +18,7 @@ if (container) {
     const root = createRoot(container)
     root.render(
         <React.StrictMode>
-            <BrowserRouter
-                basename={
-                    process.env.NODE_ENV === 'production' ? '/flashcard' : ''
-                }
-            >
+            <BrowserRouter basename={import.meta.env.PROD ? '/flashcard' : ''}>
                 <Routes>
                     <Route path="/" element={<App />}>
                         <Route index element={<Home />} />
